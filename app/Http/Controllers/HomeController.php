@@ -2,27 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Auth;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index()
     {
-        return view('home');
+        if(Auth::user() === null)
+            redirect(route('login'));
+        switch (Auth::user()->Role->code) {
+            case 'super-admin':
+                return redirect(route('super-admin.home'));
+                break;
+            
+            default:
+                Auth::logout();
+                return redirect(route('login'));
+        }
     }
+
+
 }

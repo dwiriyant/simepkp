@@ -17,10 +17,28 @@ Route::get('/', function () {
     return redirect('login');
 });
 
+Route::get('unauthorized', function(){
+    abort(401);
+})->name('unauthorized');
+
+Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::middleware('auth')->group(function () {
+    Route::get('change-password', [App\Http\Controllers\ChangePasswordController::class, 'edit'])->name('change-password');
+    Route::put('change-password', [App\Http\Controllers\ChangePasswordController::class, 'update'])->name('change-password.update');
+});
 
-Auth::routes();
+Route::namespace('SuperAdmin')->prefix('super-admin')->middleware('auth', 'checkSuperAdmin')->name('super-admin.')->group(function () {
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('dashboard', [App\Http\Controllers\SuperAdmin\HomeController::class, 'index'])->name('home');
+    Route::post('dashboard-upload', [App\Http\Controllers\SuperAdmin\HomeController::class, 'store'])->name('home.upload');
+
+    Route::get('customer', [App\Http\Controllers\CustomerController::class, 'index'])->name('customer.index');
+    Route::get('customer/edit', [App\Http\Controllers\CustomerController::class, 'edit'])->name('customer.edit');
+
+    Route::resource('user-management', UserManagementController::class);
+    Route::resource('branch', BranchController::class);
+});
+
