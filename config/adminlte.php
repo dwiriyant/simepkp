@@ -45,9 +45,9 @@ return [
     |
     */
 
-    'logo' => '<b>SIMEPKP</b>',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-    'logo_img_class' => 'brand-image img-circle elevation-3 d-none',
+    'logo' => '<b></b>',
+    'logo_img' => 'bsg.png',
+    'logo_img_class' => 'brand-image',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
     'logo_img_alt' => 'AdminLTE',
@@ -85,8 +85,8 @@ return [
 
     'layout_topnav' => null,
     'layout_boxed' => null,
-    'layout_fixed_sidebar' => null,
-    'layout_fixed_navbar' => null,
+    'layout_fixed_sidebar' => true,
+    'layout_fixed_navbar' => true,
     'layout_fixed_footer' => null,
     'layout_dark_mode' => null,
 
@@ -188,7 +188,7 @@ return [
     */
 
     'use_route_url' => false,
-    'dashboard_url' => 'home',
+    'dashboard_url' => 'dashboard',
     'logout_url' => 'logout',
     'login_url' => 'login',
     'register_url' => null,
@@ -227,12 +227,12 @@ return [
     'menu' => [
         // Navbar items:
         // [
-        //     'type'         => 'navbar-search',
-        //     'text'         => 'search',
+        //     'type' => 'navbar-search',
+        //     'text' => 'search',
         //     'topnav_right' => true,
         // ],
         // [
-        //     'type'         => 'fullscreen-widget',
+        //     'type' => 'fullscreen-widget',
         //     'topnav_right' => true,
         // ],
 
@@ -242,19 +242,94 @@ return [
         //     'text' => 'search',
         // ],
         [
-            'text'        => 'Dashboard',
-            'route'         => 'home',
-            'icon'        => 'fas fa-fw fa-home',
+            'text' => 'Dashboard',
+            'route' => 'super-admin.dashboard',
+            'icon' => 'fas fa-fw fa-home',
+            'can' => 'isSuperAdmin',
+        ],
+        [
+            'text' => 'Dashboard',
+            'route' => 'head-office-admin.dashboard',
+            'icon' => 'fas fa-fw fa-home',
+            'can' => 'isHeadOfficeAdmin',
+        ],
+        [
+            'text' => 'Dashboard',
+            'route' => 'branch-office-admin.dashboard',
+            'icon' => 'fas fa-fw fa-home',
+            'can' => 'isBranchOfficeAdmin',
+        ],
+        [
+            'text' => 'Dashboard',
+            'route' => 'supervisor.dashboard',
+            'icon' => 'fas fa-fw fa-home',
+            'can' => 'isSupervisor',
+        ],
+        [
+            'text' => 'Dashboard',
+            'route' => 'credit-manager.dashboard',
+            'icon' => 'fas fa-fw fa-home',
+            'can' => 'isCreditManager',
+        ],
+        [
+            'text' => 'Dashboard',
+            'route' => 'branch-manager.dashboard',
+            'icon' => 'fas fa-fw fa-home',
+            'can' => 'isBranchManager',
+        ],
+        [
+            'text' => 'Dashboard',
+            'route' => 'credit-collection.dashboard',
+            'icon' => 'fas fa-fw fa-home',
+            'can' => 'isCreditCollection',
         ],
         [
             'text' => 'Data Cabang',
             'route'  => 'super-admin.branch.index',
             'icon' => 'fas fa-fw fa-code-branch',
+            'can' => 'isSuperAdmin',
         ],
         [
-            'text'        => 'Data Nasabah',
-            'route'         => 'super-admin.customer.index',
-            'icon'        => 'fas fa-fw fa-user',
+            'text' => 'Data Nasabah',
+            'route' => 'super-admin.customer.index',
+            'icon' => 'fas fa-fw fa-user',
+            'can' => 'isSuperAdmin',
+        ],
+        [
+            'text' => 'Data Nasabah',
+            'route' => 'branch-office-admin.customer.index',
+            'icon' => 'fas fa-fw fa-user',
+            'can' => 'isBranchOfficeAdmin',
+        ],
+        [
+            'text' => 'Data Nasabah',
+            'route' => 'branch-manager.customer.index',
+            'icon' => 'fas fa-fw fa-user',
+            'can' => 'isBranchManager',
+        ],
+        [
+            'text' => 'Data Nasabah',
+            'route' => 'head-office-admin.customer.index',
+            'icon' => 'fas fa-fw fa-user',
+            'can' => 'isHeadOfficeAdmin',
+        ],
+        [
+            'text' => 'Data Nasabah',
+            'route' => 'supervisor.customer.index',
+            'icon' => 'fas fa-fw fa-user',
+            'can' => 'isSupervisor',
+        ],
+        [
+            'text' => 'Data Nasabah',
+            'route' => 'credit-manager.customer.index',
+            'icon' => 'fas fa-fw fa-user',
+            'can' => 'isCreditManager',
+        ],
+        [
+            'text' => 'Data Nasabah',
+            'route' => 'credit-collection.customer.index',
+            'icon' => 'fas fa-fw fa-user',
+            'can' => 'isCreditCollection',
         ],
         ['header' => 'account_settings'],
         [
@@ -266,6 +341,7 @@ return [
             'text' => 'Management User',
             'route'  => 'super-admin.user-management.index',
             'icon' => 'fas fa-fw fa-user',
+            'can' => 'isSuperAdmin',
         ],
         // [
         //     'text'    => 'multilevel',

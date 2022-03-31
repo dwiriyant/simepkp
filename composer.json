@@ -20,6 +20,7 @@
     "require-dev": {
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
+        "kevincobain2000/laravel-erd": "^1.6",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^5.10",
@@ -42,8 +43,14 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
         ],
+        "post-install-cmd": [
+            "rm -rf vendor/almasaeed2010/adminlte/docs",
+            "rm -rf vendor/almasaeed2010/adminlte/pages"
+        ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "rm -rf vendor/almasaeed2010/adminlte/docs",
+            "rm -rf vendor/almasaeed2010/adminlte/pages"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""

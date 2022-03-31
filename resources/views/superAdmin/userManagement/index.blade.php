@@ -102,6 +102,7 @@
     <script>
         $(document).ready(function() {
             var t = $('#customer-table').DataTable({
+                "pageLength": 25,
                 "columnDefs": [ {
                     "searchable": false,
                     "orderable": false,

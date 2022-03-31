@@ -16,11 +16,12 @@ class CreateCustomersTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('branch_id')->nullable()->constrained('branches')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('aonm')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('set null');
             $table->string('no_rek', 20);
             $table->string('no_akd', 60);
             $table->string('nama_singkat');
             $table->date('tgl_jt');
-            $table->tinyInteger('jnk_wkt_bl');
+            $table->integer('jnk_wkt_bl');
             $table->unsignedDecimal('plafond_awal', 22, 2);
             $table->unsignedDecimal('bunga', 22, 2);
             $table->unsignedDecimal('pokok', 22, 2);
@@ -28,8 +29,7 @@ class CreateCustomersTable extends Migration
             $table->string('prd_name');
             $table->unsignedDecimal('saldo_akhir', 22, 2);
             $table->unsignedDecimal('totagunan_ydp', 22, 2);
-            $table->date('tgl_mulai');
-            $table->string('aonm');
+            $table->date('tglmulai');
             $table->timestamps();
         });
     }

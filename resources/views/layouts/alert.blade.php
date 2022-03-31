@@ -12,7 +12,7 @@
     </div>
 @endif
 
-@if (Session::has('import_dashboards')) 
+@if (Session::has('import_customer')) 
     <div class="alert alert-danger alert-block">
         <div class="row">
             <div class="col-md-8">
@@ -23,15 +23,15 @@
             </div>
         </div>
         <ul>
-            @foreach (Session::get('import_dashboards') as $is ) 
+            @foreach (Session::get('import_customer') as $val ) 
                 <li>
-                    {{$is}}
+                    {{$val}}
                 </li>
             @endforeach
         </ul>
     </div>
     @php
-        Session::forget('import_dashboards');
+        Session::forget('import_customer');
     @endphp
 @endif
 

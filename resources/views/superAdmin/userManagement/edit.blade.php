@@ -65,7 +65,7 @@
                 $('#branch_field').show();
             }
             $('#role_id').on('change', function() {
-                if(this.value === "1" || this.value === "2") {
+                if(this.value === "1" || this.value === "2" || this.value === "3") {
                     $('#branch_field').hide();
                 } else {
                     $('#branch_field').show();

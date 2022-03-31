@@ -54,4 +54,9 @@ class User extends Authenticatable
         return $this->belongsTo('App\Models\Role');
     }
 
+    public function branch()
+    {
+        return $this->belongsTo('App\Models\Branch');
+    }
+
 }

@@ -11,11 +11,23 @@
 @stop
 
 @section('content')
+@include('layouts.alert')
+    @can('isCreditCollection')
+    <div class="alert alert-warning alert-block">
+        <button type="button" class="close" data-dismiss="alert">×</button> 
+        <strong>Dimohon untuk langsung mengisi data kunjungan per Nasabah, setelah melakukan kunjungan.</strong>
+    </div>
+    @endcan
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Data Nasabah</h3>
+                    <h4 class="float-left"><b>Data Nasabah</b> </h4>
+                    @can('isSuperAdmin')
+                    <button type="button" class="btn btn-warning float-right" data-toggle="modal" data-target="#uploadModal">
+                        <i class="fa fa-upload"></i> Upload
+                    </button>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <div id="example2_wrapper" class="dataTables_wrapper dt-bootstrap4">
@@ -35,52 +47,86 @@
                                             <th>KOLEKTIBILITY</th>
                                             <th>JATUH TEMPO</th>
                                             <th>BAKI DEBET</th>
+                                            <th>STATUS</th>
                                             <th>AKSI</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td></td>
-                                            <td>001</td>
-                                            <td>00104110000122</td>
-                                            <td>KOPPEG BANK INDONESIA MAPALUS</td>
-                                            <td>5</td>
-                                            <td>30/09/2016</td>
-                                            <td>1.500.000.000</td>
-                                            <td>
-                                                <a href="{{ route(auth()->user()->Role->code.'.customer.edit') }}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Lihat Detail Memo">
-                                                    Ubah <i class="fas fa-fw fa-edit"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>001</td>
-                                            <td>00104110000122</td>
-                                            <td>KOPPEG BANK INDONESIA MAPALUS</td>
-                                            <td>5</td>
-                                            <td>30/09/2016</td>
-                                            <td>1.500.000.000</td>
-                                            <td>
-                                                <a href="{{ route(auth()->user()->Role->code.'.customer.edit') }}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Lihat Detail Memo">
-                                                    Ubah <i class="fas fa-fw fa-edit"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>001</td>
-                                            <td>00104110000122</td>
-                                            <td>KOPPEG BANK INDONESIA MAPALUS</td>
-                                            <td>5</td>
-                                            <td>30/09/2016</td>
-                                            <td>1.500.000.000</td>
-                                            <td>
-                                                <a href="{{ route(auth()->user()->Role->code.'.customer.edit') }}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Lihat Detail Memo">
-                                                    Ubah <i class="fas fa-fw fa-edit"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
+                                        @foreach ($customers as $customer)
+                                            @php
+                                                $last_visit = $customer->visit->last();
+                                                $warn = '';
+                                                if($last_visit && $last_visit->status == 'visit_unpaid' && Gate::check('isHeadOfficeAdmin')) {
+                                                    $warn = 'table-warning';
+                                                }
+                                                if($last_visit && $last_visit->status == 'action_approve' && Gate::check('isHeadOfficeAdmin')) {
+                                                    $warn = 'table-info';
+                                                }
+                                                if($last_visit && $last_visit->status == 'recommendation_validation' && Gate::check('isSupervisor')) {
+                                                    $warn = 'table-warning';
+                                                }
+                                                if($last_visit && $last_visit->status == 'recommendation_approve' && Gate::check('isCreditCollection')) {
+                                                    $warn = 'table-warning';
+                                                }
+                                                if($last_visit && $last_visit->status == 'input_deadline' && Gate::check('isCreditCollection')) {
+                                                    $warn = 'table-info';
+                                                }
+                                                if($last_visit && $last_visit->status == 'action_validation' && Gate::check('isCreditManager')) {
+                                                    $warn = 'table-warning';
+                                                }
+                                                if($last_visit && $last_visit->status == 'action_realized' && Gate::check('isCreditManager')) {
+                                                    $warn = 'table-success';
+                                                }
+                                                if($last_visit && $last_visit->status == 'action_realized' && Gate::check('isHeadOfficeAdmin')) {
+                                                    $warn = 'table-success';
+                                                }
+                                                if($last_visit && $last_visit->status == 'recommendation_revision' && Gate::check('isHeadOfficeAdmin')) {
+                                                    $warn = 'table-danger';
+                                                }
+                                                if($last_visit && $last_visit->status == 'action_revision' && Gate::check('isCreditCollection')) {
+                                                    $warn = 'table-danger';
+                                                }
+                                            @endphp
+                                            <tr class="{{$warn}}">
+                                                <td></td>
+                                                <td>{{ $customer->branch->code }}</td>
+                                                <td>{{ $customer->no_rek }}</td>
+                                                <td>{{ $customer->nama_singkat }}</td>
+                                                <td>{{ $customer->kolektibility }}</td>
+                                                <td>per tanggal {{ date('d', strtotime($customer->tgl_jt)) }}</td>
+                                                <td>{{ $customer->saldo_akhir }}</td>
+                                                <td>
+                                                    @if ($last_visit && $last_visit->status == 'visit_paid')
+                                                        Sudah Dibayar
+                                                    @elseif ($last_visit && $last_visit->status == 'visit_unpaid')
+                                                        Butuh Rekomendasi
+                                                    @elseif($last_visit && $last_visit->status == 'recommendation_validation')
+                                                        Review Rekomendasi
+                                                    @elseif($last_visit && $last_visit->status == 'recommendation_revision')
+                                                        Revisi Rekomendasi
+                                                    @elseif($last_visit && $last_visit->status == 'recommendation_approve')
+                                                        Rekomendasi Disetujui
+                                                    @elseif($last_visit && $last_visit->status == 'action_validation')
+                                                        Review Action Plan
+                                                    @elseif($last_visit && $last_visit->status == 'action_revision')
+                                                        Revisi Action Plan
+                                                    @elseif($last_visit && $last_visit->status == 'action_approve')
+                                                        Action Plan Disetujui
+                                                    @elseif($last_visit && $last_visit->status == 'input_deadline')
+                                                        Deadline Sudah Ada
+                                                    @elseif($last_visit && $last_visit->status == 'action_realized')
+                                                        Action Plan Sudah Dilakukan
+                                                    @else
+                                                        -                                                        
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route(Auth::user()->Role->code.'.customer.detail', $customer->id) }}" class="btn btn-primary" data-toggle="tooltip" data-placement="bottom" title="Lihat Detail Nasabah">
+                                                        Detail
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -88,6 +134,39 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="uploadModalLabel">Upload Data Nasabah</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <form action="{{route('super-admin.customer.upload')}}" method="post" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">                            
+                            <x-adminlte-input-file name="file" label="File Excel" placeholder="Choose a file..." accept=".xls,.xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text bg-lightblue">
+                                        <i class="fas fa-upload"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input-file>                        
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <x-adminlte-button class="btn-flat" label="Close" theme="secondary" icon="fas fa-lg fa-times" data-dismiss="modal"/>
+                    <x-adminlte-button class="btn-flat" type="submit" label="Upload" theme="success" icon="fas fa-lg fa-upload"/>
+                </div>
+            </form>
+        </div>
         </div>
     </div>
 @stop
@@ -102,6 +181,7 @@
     <script>
         $(document).ready(function() {
             var t = $('#customer-table').DataTable({
+                "pageLength": 25,
                 "columnDefs": [ {
                     "searchable": false,
                     "orderable": false,

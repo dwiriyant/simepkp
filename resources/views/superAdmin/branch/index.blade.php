@@ -19,11 +19,11 @@
                         <div class="col-md-6">
                             <h3 class="card-title">List Data Cabang</h3>
                         </div>
-                        <div class="col-md-6 text-right">
+                        {{-- <div class="col-md-6 text-right">
                             <a href="{{route('super-admin.branch.create')}}" class="btn btn-primary">
                                 <i class="fas fa-fw fa-plus"></i> Tambah Cabang
                             </a>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <div class="card-body">
@@ -56,7 +56,7 @@
                                                     <a href="{{ route('super-admin.branch.edit', $branch->id) }}" class="btn btn-warning" title="Ubah Data Cabang">
                                                         <i class="fas fa-fw fa-edit"></i> Ubah
                                                     </a>
-                                                    <form action="{{route('super-admin.branch.destroy', $branch->id)}}" method="post" style="display: inline">
+                                                    {{-- <form action="{{route('super-admin.branch.destroy', $branch->id)}}" method="post" style="display: inline">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{$branch->id}}" title="Hapus Data Cabang">
@@ -81,7 +81,7 @@
                                                             </div>
                                                         </div>
                                                         <!-- End Modal -->
-                                                    </form>
+                                                    </form> --}}
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -106,6 +106,7 @@
     <script>
         $(document).ready(function() {
             var t = $('#customer-table').DataTable({
+                "pageLength": 25,
                 "columnDefs": [ {
                     "searchable": false,
                     "orderable": false,

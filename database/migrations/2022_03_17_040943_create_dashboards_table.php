@@ -16,7 +16,6 @@ class CreateDashboardsTable extends Migration
         Schema::create('dashboards', function (Blueprint $table) {
             $table->id();
             $table->foreignId('branch_id')->nullable()->constrained('branches')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('created_by')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('set null');
             $table->unsignedDecimal('outstanding_kredit', 22, 2)->default(0);
             $table->unsignedDecimal('kredit_produktif', 22, 2)->default(0);
             $table->unsignedDecimal('baki_debet_npl', 22, 2)->default(0);

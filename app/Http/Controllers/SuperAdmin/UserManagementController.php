@@ -84,9 +84,11 @@ class UserManagementController extends Controller
     public function edit(User $user_management)
     {
         $roles = Role::all();
+        $branches = Branch::all();
         return view('superAdmin.userManagement.edit', [
             'user' => $user_management,
-            'roles' => $roles
+            'roles' => $roles,
+            'branches' => $branches,
         ]);
     }
 
@@ -109,8 +111,9 @@ class UserManagementController extends Controller
         if($validated['role_id'] == 1 || $validated['role_id'] == 2) {
             unset($validated['branch_id']);
         }
-        if(!$validated['password'])
+        if(!$validated['password']) {
             unset($validated['password']);
+        }
         $user_management->fill($validated);
         $user_management->save();
         $request->session()->flash('success', 'User : '.$user_management['name'].' berhasil diubah!');

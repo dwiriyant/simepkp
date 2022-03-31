@@ -41,25 +41,25 @@ class DashboardsImport implements ToModel, WithHeadingRow, WithStartRow
             if(isset($row['indikator_keuangan_utama']) && $row['indikator_keuangan_utama'] == 'Kredit Yang Diberikan') {
                 Dashboard::updateOrCreate(
                     ['month' => $value, 'branch_id' => $this->branch_id],
-                    ['outstanding_kredit' => $row[$key], 'created_by' => Auth::user()->id]
+                    ['outstanding_kredit' => $row[$key]]
                 );
             }
             if(isset($row['indikator_keuangan_utama']) && $row['indikator_keuangan_utama'] == 'Kredit Produktif') {
                 Dashboard::updateOrCreate(
                     ['month' => $value, 'branch_id' => $this->branch_id],
-                    ['kredit_produktif' => $row[$key], 'created_by' => Auth::user()->id]
+                    ['kredit_produktif' => $row[$key]]
                 );
             }
             if(isset($row['indikator_keuangan_utama']) && $row['indikator_keuangan_utama'] == 'Baki Debet NPL Kredit Produktif') {
                 Dashboard::updateOrCreate(
                     ['month' => $value, 'branch_id' => $this->branch_id],
-                    ['baki_debet_npl' => $row[$key], 'created_by' => Auth::user()->id]
+                    ['baki_debet_npl' => $row[$key]]
                 );
             }
             if(isset($row['indikator_keuangan_utama']) && $row['indikator_keuangan_utama'] == 'NPL Kredit Produktif') {
                 Dashboard::updateOrCreate(
                     ['month' => $value, 'branch_id' => $this->branch_id],
-                    ['non_performing_loan' => $row[$key], 'created_by' => Auth::user()->id]
+                    ['non_performing_loan' => $row[$key]]
                 );
             }
         }
