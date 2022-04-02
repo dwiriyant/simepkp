@@ -3,14 +3,10 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <div class="row mb-2">
-        <div class="col-sm-6">
-            {{-- <h1 class="m-0">Data Nasabah</h1> --}}
-        </div>
-    </div>
 @stop
 
 @section('content')
+<br>
 @include('layouts.alert')
     @can('isCreditCollection')
     <div class="alert alert-warning alert-block">
@@ -54,13 +50,13 @@
                                     <tbody>
                                         @foreach ($customers as $customer)
                                             @php
-                                                $last_visit = $customer->visit->last();
+                                                $last_visit = $customer->visit->sortByDesc('visit_at')->first();
                                                 $warn = '';
                                                 if($last_visit && $last_visit->status == 'visit_unpaid' && Gate::check('isHeadOfficeAdmin')) {
                                                     $warn = 'table-warning';
                                                 }
                                                 if($last_visit && $last_visit->status == 'action_approve' && Gate::check('isHeadOfficeAdmin')) {
-                                                    $warn = 'table-info';
+                                                    $warn = 'table-warning';
                                                 }
                                                 if($last_visit && $last_visit->status == 'recommendation_validation' && Gate::check('isSupervisor')) {
                                                     $warn = 'table-warning';
@@ -69,7 +65,7 @@
                                                     $warn = 'table-warning';
                                                 }
                                                 if($last_visit && $last_visit->status == 'input_deadline' && Gate::check('isCreditCollection')) {
-                                                    $warn = 'table-info';
+                                                    $warn = 'table-warning';
                                                 }
                                                 if($last_visit && $last_visit->status == 'action_validation' && Gate::check('isCreditManager')) {
                                                     $warn = 'table-warning';
@@ -94,7 +90,7 @@
                                                 <td>{{ $customer->nama_singkat }}</td>
                                                 <td>{{ $customer->kolektibility }}</td>
                                                 <td>per tanggal {{ date('d', strtotime($customer->tgl_jt)) }}</td>
-                                                <td>{{ $customer->saldo_akhir }}</td>
+                                                <td>{{ number_format($customer->saldo_akhir,2,',','.') }}</td>
                                                 <td>
                                                     @if ($last_visit && $last_visit->status == 'visit_paid')
                                                         Sudah Dibayar
@@ -173,6 +169,8 @@
 
 @section('plugins.Datatables', true)
 
+@section('plugins.BsCustomFileInput', true)
+
 @section('css')
     {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
 @stop
@@ -181,13 +179,15 @@
     <script>
         $(document).ready(function() {
             var t = $('#customer-table').DataTable({
-                "pageLength": 25,
+                "scrollY":        "400px",
+                "scrollCollapse": true,
+                "paging":         false,
                 "columnDefs": [ {
                     "searchable": false,
                     "orderable": false,
                     "targets": 0
                 } ],
-                "order": [[ 1, 'asc' ]]
+                "order": [[ 7, 'desc' ]]
             });
             t.on( 'order.dt search.dt', function () {
                 t.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {

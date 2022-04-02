@@ -49,29 +49,46 @@
                                         @foreach ($visits as $visit)
                                             @php
                                                 $warn = '';
+                                                $button = '';
                                                 if($visit->status == 'visit_unpaid' && Gate::check('isHeadOfficeAdmin')) {
                                                     $warn = 'table-warning';
+                                                    $button = 'Edit';
                                                 }
                                                 if($visit->status == 'action_approve' && Gate::check('isHeadOfficeAdmin')) {
                                                     $warn = 'table-warning';
+                                                    $button = 'Edit';
                                                 }
                                                 if($visit->status == 'recommendation_validation' && Gate::check('isSupervisor')) {
                                                     $warn = 'table-warning';
+                                                    $button = 'Edit';
                                                 }
                                                 if($visit->status == 'recommendation_approve' && Gate::check('isCreditCollection')) {
                                                     $warn = 'table-warning';
+                                                    $button = 'Edit';
                                                 }                                                
                                                 if($visit->status == 'input_deadline' && Gate::check('isCreditCollection')) {
                                                     $warn = 'table-info';
+                                                    $button = 'Edit';
                                                 }
                                                 if($visit->status == 'action_validation' && Gate::check('isCreditManager')) {
                                                     $warn = 'table-warning';
+                                                    $button = 'Edit';
                                                 }
                                                 if($visit->status == 'action_realized' && Gate::check('isCreditManager')) {
                                                     $warn = 'table-success';
+                                                    $button = 'Lihat';
                                                 }
                                                 if($visit->status == 'action_realized' && Gate::check('isHeadOfficeAdmin')) {
                                                     $warn = 'table-success';
+                                                    $button = 'Lihat';
+                                                }
+                                                if($visit->status == 'recommendation_revision' && Gate::check('isHeadOfficeAdmin')) {
+                                                    $warn = 'table-danger';
+                                                    $button = 'Edit';
+                                                }
+                                                if($visit->status == 'action_revision' && Gate::check('isCreditCollection')) {
+                                                    $warn = 'table-danger';
+                                                    $button = 'Edit';
                                                 }
                                             @endphp
                                             <tr class="{{ $warn }}">
@@ -107,7 +124,7 @@
                                                 </td>
                                                 <td>
                                                     <a href="{{ route(Auth::user()->Role->code.'.customer.edit-visit', $visit->id) }}" class="btn btn-warning" data-toggle="tooltip" data-placement="bottom" title="Tambah Kunjungan">
-                                                        Edit
+                                                        {{ $button ? $button : 'Lihat' }}
                                                     </a>
                                                 </td>
                                             </tr>
@@ -139,7 +156,7 @@
                     "orderable": false,
                     "targets": 0
                 } ],
-                "order": [[ 1, 'asc' ]]
+                "order": []
             });
             t.on( 'order.dt search.dt', function () {
                 t.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {

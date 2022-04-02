@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Storage;
+use Session;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -37,12 +38,16 @@ class CustomerController extends Controller
     {
         $import = Excel::import(new CustomersImport, $request->file);
         
-        return redirect(route('super-admin.customer.index'))->with('success', 'Berhasil Upload Data Nasabah!');
+        if(Session::has('import_customer')) {
+            return redirect(route('super-admin.customer.index'));
+        } else {
+            return redirect(route('super-admin.customer.index'))->with('success', 'Berhasil Upload Data Nasabah!');
+        }
     }
 
     public function detail(Request $request, Customer $customer)
     {
-        $visits = Visit::where('customer_id', $customer->id)->get();
+        $visits = Visit::where('customer_id', $customer->id)->orderBy('visit_at', 'desc')->get();
         return view('customer.detail', [
             'customer' => $customer,
             'visits' => $visits
@@ -73,7 +78,7 @@ class CustomerController extends Controller
 
         $exist = Visit::where('customer_id', $customer->id)->whereMonth('visit_at', date('m'))->first();
         if($exist)
-            $exist->update($validated);
+            return redirect(route('credit-collection.customer.detail', $customer->id))->with('error', 'Anda sudah melakukan kunjungan bulan ini!');
         else
             Visit::create($validated);
 

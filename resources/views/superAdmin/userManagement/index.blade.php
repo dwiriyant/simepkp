@@ -108,7 +108,7 @@
                     "orderable": false,
                     "targets": 0
                 } ],
-                "order": [[ 1, 'asc' ]]
+                "order": []
             });
             t.on( 'order.dt search.dt', function () {
                 t.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {

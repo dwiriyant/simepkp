@@ -14,15 +14,42 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        Role::createMany([
+        Role::insert([
             [
-                'code' => 'superadmin',
+                'id' => 1,
+                'code' => 'super-admin',
                 'name' => 'Super Admin',
         
             ],
             [
-                'code' => 'manager',
-                'name' => 'Manager',        
+                'id' => 2,
+                'code' => 'head-office-admin',
+                'name' => 'Admin Kantor Pusat',        
+            ],
+            [
+                'id' => 3,
+                'code' => 'supervisor',
+                'name' => 'Supervisor',        
+            ],
+            [
+                'id' => 4,
+                'code' => 'branch-manager',
+                'name' => 'Manager Cabang',        
+            ],
+            [
+                'id' => 5,
+                'code' => 'branch-office-admin',
+                'name' => 'Admin Kantor Cabang',        
+            ],
+            [
+                'id' => 6,
+                'code' => 'credit-manager',
+                'name' => 'Manager Kredit',        
+            ],
+            [
+                'id' => 7,
+                'code' => 'credit-collection',
+                'name' => 'Collection/Analys Credit',        
             ],
         ]);
     }

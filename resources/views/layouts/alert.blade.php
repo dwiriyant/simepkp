@@ -35,6 +35,29 @@
     @endphp
 @endif
 
+@if (Session::has('import_dashboard')) 
+    <div class="alert alert-danger alert-block">
+        <div class="row">
+            <div class="col-md-8">
+                <p>Terjadi Kesalahan</p>
+            </div>
+            <div class="col-md-4">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+            </div>
+        </div>
+        <ul>
+            @foreach (Session::get('import_dashboard') as $val ) 
+                <li>
+                    {{$val}}
+                </li>
+            @endforeach
+        </ul>
+    </div>
+    @php
+        Session::forget('import_dashboard');
+    @endphp
+@endif
+
 @if ($message = Session::get('warning'))
     <div class="alert alert-warning alert-block">
         <button type="button" class="close" data-dismiss="alert">×</button> 

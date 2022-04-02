@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use Auth;
+use Session;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithStartRow;
@@ -25,6 +26,11 @@ class DashboardsImport implements ToModel, WithHeadingRow, WithStartRow
     */
     public function model(array $row)
     {
+        if(!isset($row['indikator_keuangan_utama'])) {
+            Session::put('import_dashboard', ['Format File Upload Excel tidak sesuai']);
+                    
+            return null;
+        }
         $head = $row;
         unset($head[""]);
         unset($head["indikator_keuangan_utama"]);
@@ -41,25 +47,25 @@ class DashboardsImport implements ToModel, WithHeadingRow, WithStartRow
             if(isset($row['indikator_keuangan_utama']) && $row['indikator_keuangan_utama'] == 'Kredit Yang Diberikan') {
                 Dashboard::updateOrCreate(
                     ['month' => $value, 'branch_id' => $this->branch_id],
-                    ['outstanding_kredit' => $row[$key]]
+                    ['outstanding_kredit' => (float)$row[$key]]
                 );
             }
             if(isset($row['indikator_keuangan_utama']) && $row['indikator_keuangan_utama'] == 'Kredit Produktif') {
                 Dashboard::updateOrCreate(
                     ['month' => $value, 'branch_id' => $this->branch_id],
-                    ['kredit_produktif' => $row[$key]]
+                    ['kredit_produktif' => (float)$row[$key]]
                 );
             }
             if(isset($row['indikator_keuangan_utama']) && $row['indikator_keuangan_utama'] == 'Baki Debet NPL Kredit Produktif') {
                 Dashboard::updateOrCreate(
                     ['month' => $value, 'branch_id' => $this->branch_id],
-                    ['baki_debet_npl' => $row[$key]]
+                    ['baki_debet_npl' => (float)$row[$key]]
                 );
             }
             if(isset($row['indikator_keuangan_utama']) && $row['indikator_keuangan_utama'] == 'NPL Kredit Produktif') {
                 Dashboard::updateOrCreate(
                     ['month' => $value, 'branch_id' => $this->branch_id],
-                    ['non_performing_loan' => $row[$key]]
+                    ['non_performing_loan' => (float)$row[$key]]
                 );
             }
         }

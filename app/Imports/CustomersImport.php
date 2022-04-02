@@ -23,7 +23,13 @@ class CustomersImport implements ToModel, WithHeadingRow, WithStartRow
     */
     public function model(array $row)
     {
-        if(!$row['kd_cab']) {
+        if(!isset($row['kd_cab'])) {
+            if(array_key_exists('kd_cab', $row) && $row['kd_cab'] == null){
+                return null;
+            }
+
+            Session::put('import_customer', ['Format File Upload Excel tidak sesuai']);
+
             return null;
         }            
         $this->rowNumber++;
@@ -53,13 +59,13 @@ class CustomersImport implements ToModel, WithHeadingRow, WithStartRow
                 'nama_singkat' => $row['nama_singkat'],
                 'tgl_jt' => is_string($row['tgl_jt']) ? date('Y-m-d', strtotime(str_replace('/', '-',$row['tgl_jt']))) : Carbon\Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['tgl_jt']))->format('Y-m-d'),
                 'jnk_wkt_bl' => $row['jnk_wkt_bl'],
-                'plafond_awal' => $row['plafond_awal'],
-                'bunga' => $row['bunga'],
-                'pokok' => $row['pokok'],
+                'plafond_awal' => (float)$row['plafond_awal'],
+                'bunga' => (float)$row['bunga'],
+                'pokok' => (float)$row['pokok'],
                 'kolektibility' => $row['kolektibility'],
                 'prd_name' => $row['prd_name'],
-                'saldo_akhir' => $row['saldo_akhir'],
-                'totagunan_ydp' => $row['totagunan_ydp'],
+                'saldo_akhir' => (float)$row['saldo_akhir'],
+                'totagunan_ydp' => (float)$row['totagunan_ydp'],
                 'tglmulai' => is_string($row['tglmulai']) ? date('Y-m-d', strtotime(str_replace('/', '-',$row['tglmulai']))) : Carbon\Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['tglmulai']))->format('Y-m-d'),
                 'aonm' => $aomn,
             ]

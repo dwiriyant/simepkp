@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use DateTime;
+use DateInterval;
+use DatePeriod;
+use Session;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -39,24 +43,36 @@ class DashboardController extends Controller
         } else {
             $request->month = date('Y-m', strtotime('first day of last month'));
         }
-        $month_only = date('m', strtotime($month_end));
 
         $comparison_date = date('Y-m-t', strtotime('-1 year', strtotime($month_end)));
 
-        $last = Dashboard::branches($filter_branch)->whereMonth('month', $month_only)->first();
+        $last = Dashboard::branches($filter_branch)->where('month', $month_end)->first();
         $all = Dashboard::branches($filter_branch)->whereBetween('month',[$month_start, $month_end])->orderBy('month', 'asc')->pluck('month');
 
-        $comparison = Dashboard::branches($filter_branch)->where('month', $comparison_date)->first();
-        if($comparison)
-            $all->prepend($comparison->month);
         $label = [];
-        foreach($all as $month_label) {
-            $day = date('d', strtotime($month_label));
-            $month = Helpers::getNumberToMonth(date('m', strtotime($month_label)));
-            $year = date('Y', strtotime($month_label));
+        $comparison = Dashboard::branches($filter_branch)->where('month', $comparison_date)->first();
+        if($comparison) {
+            $all->prepend($comparison->month);
+            $comparison_month = $comparison->month;
+            $day = date('d', strtotime($comparison_month));
+            $month = Helpers::getNumberToMonth(date('m', strtotime($comparison_month)));
+            $year = date('Y', strtotime($comparison_month));
             $label[] = $day . '-' . $month . '-' . $year;
         }
-        $outstanding_kredit = Dashboard::branches($filter_branch)->whereBetween('month',[$month_start, $month_end])->orderBy('month', 'desc')->pluck('outstanding_kredit');
+        
+        $start    = (new DateTime($month_start))->modify('first day of this month');
+        $end      = (new DateTime($month_end))->modify('first day of next month');
+        $interval = DateInterval::createFromDateString('1 month');
+        $period   = new DatePeriod($start, $interval, $end);
+        
+        foreach ($period as $dt) {
+            $day = $dt->format("t");
+            $month = Helpers::getNumberToMonth($dt->format("m"));
+            $year = $dt->format("Y");
+            $label[] = $day . '-' . $month . '-' . $year;
+        }
+
+        $outstanding_kredit = Dashboard::branches($filter_branch)->whereBetween('month',[$month_start, $month_end])->orderBy('month', 'asc')->pluck('outstanding_kredit');
         foreach ($outstanding_kredit as $key => $value) {
             $outstanding_kredit[$key] = (float)$value;
         }
@@ -64,7 +80,7 @@ class DashboardController extends Controller
             $outstanding_kredit->prepend((float)$comparison->outstanding_kredit);
         $outstanding_kredit = json_encode($outstanding_kredit);
         
-        $kredit_produktif = Dashboard::branches($filter_branch)->whereBetween('month',[$month_start, $month_end])->orderBy('month', 'desc')->pluck('kredit_produktif');
+        $kredit_produktif = Dashboard::branches($filter_branch)->whereBetween('month',[$month_start, $month_end])->orderBy('month', 'asc')->pluck('kredit_produktif');
         foreach ($kredit_produktif as $key => $value) {
             $kredit_produktif[$key] = (float)$value;
         }
@@ -72,7 +88,7 @@ class DashboardController extends Controller
             $kredit_produktif->prepend((float)$comparison->kredit_produktif);
         $kredit_produktif = json_encode($kredit_produktif);
 
-        $baki_debet_npl = Dashboard::branches($filter_branch)->whereBetween('month',[$month_start, $month_end])->orderBy('month', 'desc')->pluck('baki_debet_npl');
+        $baki_debet_npl = Dashboard::branches($filter_branch)->whereBetween('month',[$month_start, $month_end])->orderBy('month', 'asc')->pluck('baki_debet_npl');
         foreach ($baki_debet_npl as $key => $value) {
             $baki_debet_npl[$key] = (float)$value;
         }
@@ -80,7 +96,7 @@ class DashboardController extends Controller
             $baki_debet_npl->prepend((float)$comparison->baki_debet_npl);
         $baki_debet_npl = json_encode($baki_debet_npl);
 
-        $non_performing_loan = Dashboard::branches($filter_branch)->whereBetween('month',[$month_start, $month_end])->orderBy('month', 'desc')->pluck('non_performing_loan');
+        $non_performing_loan = Dashboard::branches($filter_branch)->whereBetween('month',[$month_start, $month_end])->orderBy('month', 'asc')->pluck('non_performing_loan');
         foreach ($non_performing_loan as $key => $value) {
             $non_performing_loan[$key] = (float)$value;
         }
@@ -117,6 +133,10 @@ class DashboardController extends Controller
     {
         $import = Excel::import(new DashboardsImport($request->branch_id), $request->file);
         
-        return redirect(route('super-admin.dashboard'))->with('success', 'Berhasil Upload Data Dashboard!');
+        if(Session::has('import_dashboard')) {
+            return redirect(route('super-admin.dashboard'));
+        } else {
+            return redirect(route('super-admin.dashboard'))->with('success', 'Berhasil Upload Data Dashboard!');
+        }
     }
 }

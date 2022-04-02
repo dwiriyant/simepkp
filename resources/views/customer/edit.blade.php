@@ -135,7 +135,7 @@
                                     <br>
                                     <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Dokumen</a>
                                 </div>
-                                @if ($visit->status == "visit_unpaid")
+                                @if ($visit->status == "visit_unpaid" || $visit->status == "recommendation_revision")
                                     <div class="form-group">
                                         <x-adminlte-textarea label="REKOMENDASI" rows="4" name="recommendation" enable-old-support>
                                             {{ isset($visit->recommendation) ? $visit->recommendation->recommendation : '' }}
@@ -152,7 +152,7 @@
                                 
                                 @if ($visit->status == "recommendation_revision" || $visit->status == "recommendation_approve")
                                 <div class="form-group">
-                                    <x-adminlte-select name="recommendation_status" label="APPROVAL" required enable-old-support disabled>
+                                    <x-adminlte-select name="recommendation_status" label="APPROVAL REKOMENDASI" required enable-old-support disabled>
                                         <x-adminlte-options :options="['recommendation_approve' => 'Setujui', 'recommendation_revision' => 'Perbaiki']" :selected="$visit->status"/>
                                     </x-adminlte-select>
                                 </div>
@@ -247,7 +247,7 @@
                                 </div>
                                 @if ($visit->status == 'recommendation_validation')
                                     <div class="form-group">
-                                        <x-adminlte-select name="recommendation_status" label="APPROVAL" required enable-old-support>
+                                        <x-adminlte-select name="recommendation_status" label="APPROVAL REKOMENDASI" required enable-old-support>
                                             <x-adminlte-options :options="['recommendation_approve' => 'Setujui', 'recommendation_revision' => 'Perbaiki']" :selected="$visit->status"/>
                                         </x-adminlte-select>
                                     </div>
@@ -396,7 +396,7 @@
                                 </div>
                                 @if ($visit->status == 'action_validation')
                                     <div class="form-group">
-                                        <x-adminlte-select name="action_status" label="APPROVAL" required enable-old-support>
+                                        <x-adminlte-select name="action_status" label="APPROVAL ACTION PLAN" required enable-old-support>
                                             <x-adminlte-options :options="['action_approve' => 'Setujui', 'action_revision' => 'Perbaiki']" :selected="$visit->status"/>
                                         </x-adminlte-select>
                                     </div>
@@ -429,7 +429,7 @@
                                     </div>
                                 @elseif($visit->status != 'action_realized')
                                     <div class="form-group">
-                                        <x-adminlte-select name="action_status" label="APPROVAL" disabled enable-old-support>
+                                        <x-adminlte-select name="action_status" label="APPROVAL ACTION PLAN" disabled enable-old-support>
                                             <x-adminlte-options :options="['action_approve' => 'Setujui', 'action_revision' => 'Perbaiki']" :selected="$visit->status"/>
                                         </x-adminlte-select>
                                     </div>
