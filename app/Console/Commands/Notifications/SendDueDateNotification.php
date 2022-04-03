@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Console\Command;
 use App\Notifications\DueDateNotification;
 use App\Models\User;
+use App\Models\Customer;
 
 class SendDueDateNotification extends Command
 {

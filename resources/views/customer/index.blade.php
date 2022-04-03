@@ -52,7 +52,7 @@
                                             @php
                                                 $last_visit = $customer->visit->sortByDesc('visit_at')->first();
                                                 $warn = '';
-                                                if($last_visit && $last_visit->status == 'visit_unpaid' && Gate::check('isHeadOfficeAdmin')) {
+                                                if($last_visit && $last_visit->status == 'new' && Gate::check('isHeadOfficeAdmin')) {
                                                     $warn = 'table-warning';
                                                 }
                                                 if($last_visit && $last_visit->status == 'action_approve' && Gate::check('isHeadOfficeAdmin')) {
@@ -92,9 +92,7 @@
                                                 <td>per tanggal {{ date('d', strtotime($customer->tgl_jt)) }}</td>
                                                 <td>{{ number_format($customer->saldo_akhir,2,',','.') }}</td>
                                                 <td>
-                                                    @if ($last_visit && $last_visit->status == 'visit_paid')
-                                                        Sudah Dibayar
-                                                    @elseif ($last_visit && $last_visit->status == 'visit_unpaid')
+                                                    @if ($last_visit && $last_visit->status == 'new')
                                                         Butuh Rekomendasi
                                                     @elseif($last_visit && $last_visit->status == 'recommendation_validation')
                                                         Review Rekomendasi

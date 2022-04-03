@@ -66,8 +66,7 @@ class CustomerController extends Controller
     public function store_visit(Request $request, Customer $customer)
     {
         $validated = $request->validate([
-            'visit_status' => 'required|in:visit_paid,visit_unpaid',
-            'result' => 'required_if:visit_status,==,visit_unpaid',
+            'result' => 'required',
             'document' => 'nullable|file|image|max:2048',
         ]);
         if(isset($validated['document']))
@@ -77,10 +76,12 @@ class CustomerController extends Controller
         $validated['status'] = $validated['visit_status'];
 
         $exist = Visit::where('customer_id', $customer->id)->whereMonth('visit_at', date('m'))->first();
-        if($exist)
+        if($exist) {
             return redirect(route('credit-collection.customer.detail', $customer->id))->with('error', 'Anda sudah melakukan kunjungan bulan ini!');
-        else
+        }
+        else {
             Visit::create($validated);
+        }
 
         // echo Auth::->user()->unreadNotifications;
         return redirect(route('credit-collection.customer.detail', $customer->id))->with('success', 'Berhasil membuat data kunjungan!');

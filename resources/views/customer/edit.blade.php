@@ -85,14 +85,9 @@
                     <div class="col-md-12">
                         @if ($create)
                             <div class="form-group">
-                                <x-adminlte-select name="visit_status" label="HASIL KUNJUNGAN" required enable-old-support>
-                                    <x-adminlte-options :options="['visit_paid' => 'Sudah Dibayar', 'visit_unpaid' => 'Belum Dibayar']" />
-                                </x-adminlte-select>
-                            </div>
-                            <div class="form-group" id="visit_result" style="display: none;">
                                 <x-adminlte-textarea label="DETAIL" rows="4" name="result" enable-old-support required />
                             </div>
-                            <div class="form-group" id="visit_document">
+                            <div class="form-group">
                                 <x-adminlte-input-file name="document" label="DOKUMEN" placeholder="Choose a file...">
                                     <x-slot name="prependSlot">
                                         <div class="input-group-text bg-lightblue">
@@ -135,7 +130,7 @@
                                     <br>
                                     <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Dokumen</a>
                                 </div>
-                                @if ($visit->status == "visit_unpaid" || $visit->status == "recommendation_revision")
+                                @if ($visit->status == "new" || $visit->status == "recommendation_revision")
                                     <div class="form-group">
                                         <x-adminlte-textarea label="REKOMENDASI" rows="4" name="recommendation" enable-old-support>
                                             {{ isset($visit->recommendation) ? $visit->recommendation->recommendation : '' }}
@@ -204,7 +199,7 @@
                                         </div>
                                     </div>
                                 @endif
-                                @if ($visit->status == 'visit_unpaid' || $visit->status == 'recommendation_revision')
+                                @if ($visit->status == 'new' || $visit->status == 'recommendation_revision')
                                     <br>
                                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#sendModal" title="Hapus Data Cabang">
                                         <i class="fas fa-fw fa-save"></i> KIRIM
@@ -533,28 +528,6 @@
                     $('#action_revision').show();
                     $('#send_dialog').text('Apakah Anda yakin akan merevisi Action Plan tersebut?');
                     $('#action_correction').prop('required',true);
-                }
-            });
-        }
-        if ($('#visit_status').length) {
-            if($('#visit_status').val() === "visit_paid" ) {
-                $('#visit_result').hide();
-                $('#visit_document').hide();
-                $('#result').prop('required',false);
-            } else {
-                $('#visit_result').show();
-                $('#visit_document').show();
-                $('#result').prop('required',true);
-            }
-            $('#visit_status').on('change', function() {
-                if(this.value == "visit_paid") {
-                    $('#visit_result').hide();
-                    $('#visit_document').hide();
-                    $('#result').prop('required',false);
-                } else {
-                    $('#visit_result').show();
-                    $('#visit_document').show();
-                    $('#result').prop('required',true);
                 }
             });
         }

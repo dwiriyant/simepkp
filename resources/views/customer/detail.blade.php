@@ -50,7 +50,7 @@
                                             @php
                                                 $warn = '';
                                                 $button = '';
-                                                if($visit->status == 'visit_unpaid' && Gate::check('isHeadOfficeAdmin')) {
+                                                if($visit->status == 'new' && Gate::check('isHeadOfficeAdmin')) {
                                                     $warn = 'table-warning';
                                                     $button = 'Edit';
                                                 }
@@ -94,13 +94,11 @@
                                             <tr class="{{ $warn }}">
                                                 <td></td>
                                                 <td>{{ $visit->visit_at }}</td>
-                                                <td>{{ $visit->result }}</td>
+                                                <td>{{ $visit->result ?: '-' }}</td>
                                                 <td>{{ $visit->recommendation ? $visit->recommendation->recommendation : '-' }}</td>
                                                 <td>{{ isset($visit->action_plan->deadline) ? $visit->action_plan->deadline : '-' }}</td>
                                                 <td>
-                                                    @if ($visit->status == 'visit_paid')
-                                                        Sudah Dibayar {{ $visit->visit_at }}
-                                                    @elseif ($visit->status == 'visit_unpaid')
+                                                    @if ($visit->status == 'new')
                                                         Butuh Rekomendasi        
                                                     @elseif($visit->status == 'recommendation_validation')
                                                         Review Rekomendasi
