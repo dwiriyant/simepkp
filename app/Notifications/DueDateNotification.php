@@ -42,6 +42,7 @@ class DueDateNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
+                    ->subject('NOTIFIKASI JATUH TEMPO NASABAH : ' . $this->customer->nama_singkat)
                     ->greeting('NOTIFIKASI JATUH TEMPO')
                     ->line('NAMA NASABAH : ' . $this->customer->nama_singkat)
                     ->line('TANGGAL JATUH TEMPO : ' . date('d', strtotime($this->customer->tgl_jt)) . ' Bulan Berjalan')
