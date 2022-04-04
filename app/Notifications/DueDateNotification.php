@@ -7,19 +7,19 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class DueDateNotification extends Notification implements ShouldQueue
+class DueDateNotification extends Notification
 {
     use Queueable;
-    protected $user;
+    protected $customer;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($customer)
     {
-        $this->user = $user;
+        $this->customer = $customer;
     }
 
     /**
@@ -41,11 +41,13 @@ class DueDateNotification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $this->user['name'];
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+                    ->greeting('NOTIFIKASI JATUH TEMPO')
+                    ->line('NAMA NASABAH : ' . $this->customer->nama_singkat)
+                    ->line('TANGGAL JATUH TEMPO : ' . date('d', strtotime($this->customer->tgl_jt)) . ' Bulan Berjalan')
+                    ->line('Untuk mengunjungi halaman web, klik link dibawah ini')
+                    ->action('Klik Disini', route('credit-collection.customer.index'))
+                    ->line('Terima Kasih!');
     }
 
     /**

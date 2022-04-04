@@ -109,9 +109,9 @@ class DashboardController extends Controller
         $growth["baki_debet_npl"] = 0;
         $growth["non_performing_loan"] = 0;
         if($last && $comparison) {
-            $growth["outstanding_kredit"] = ($last->outstanding_kredit - $comparison->outstanding_kredit)/$comparison->outstanding_kredit;
-            $growth["kredit_produktif"] = ($last->kredit_produktif - $comparison->kredit_produktif)/$comparison->kredit_produktif;
-            $growth["baki_debet_npl"] = ($last->baki_debet_npl - $comparison->baki_debet_npl)/$comparison->outstanding_kredit;
+            $growth["outstanding_kredit"] = ($last->outstanding_kredit - $comparison->outstanding_kredit)/$comparison->outstanding_kredit*100;
+            $growth["kredit_produktif"] = ($last->kredit_produktif - $comparison->kredit_produktif)/$comparison->kredit_produktif*100;
+            $growth["baki_debet_npl"] = ($last->baki_debet_npl - $comparison->baki_debet_npl)/$comparison->baki_debet_npl*100;
             $growth["non_performing_loan"] = $last->non_performing_loan - $comparison->non_performing_loan;
         }
 

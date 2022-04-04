@@ -88,7 +88,7 @@
                                 <x-adminlte-textarea label="DETAIL" rows="4" name="result" enable-old-support required />
                             </div>
                             <div class="form-group">
-                                <x-adminlte-input-file name="document" label="DOKUMEN" placeholder="Choose a file...">
+                                <x-adminlte-input-file name="document" accept="image/*" label="FOTO" placeholder="Pilih Foto...">
                                     <x-slot name="prependSlot">
                                         <div class="input-group-text bg-lightblue">
                                             <i class="fas fa-upload"></i>
@@ -126,9 +126,9 @@
                                     </x-adminlte-textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="">DOKUMEN</label>
+                                    <label for="">FOTO</label>
                                     <br>
-                                    <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Dokumen</a>
+                                    <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat File</a>
                                 </div>
                                 @if ($visit->status == "new" || $visit->status == "recommendation_revision")
                                     <div class="form-group">
@@ -231,9 +231,9 @@
                                     </x-adminlte-textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="">DOKUMEN</label>
+                                    <label for="">FOTO</label>
                                     <br>
-                                    <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Dokumen</a>
+                                    <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Foto</a>
                                 </div>
                                 <div class="form-group">
                                     <x-adminlte-textarea label="REKOMENDASI" rows="4" name="recommendation" enable-old-support readonly>
@@ -285,9 +285,9 @@
                                     </x-adminlte-textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="">DOKUMEN</label>
+                                    <label for="">FOTO</label>
                                     <br>
-                                    <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Dokumen</a>
+                                    <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Foto</a>
                                 </div>
                                 <div class="form-group">
                                     <x-adminlte-textarea label="REKOMENDASI" rows="4" name="recommendation" enable-old-support readonly>
@@ -375,9 +375,9 @@
                                     </x-adminlte-textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="">DOKUMEN</label>
+                                    <label for="">FOTO</label>
                                     <br>
-                                    <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Dokumen</a>
+                                    <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Foto</a>
                                 </div>
                                 <div class="form-group">
                                     <x-adminlte-textarea label="REKOMENDASI" rows="4" name="recommendation" enable-old-support readonly>
@@ -442,9 +442,9 @@
                                     </x-adminlte-textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="">DOKUMEN</label>
+                                    <label for="">FOTO</label>
                                     <br>
-                                    <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Dokumen</a>
+                                    <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Foto</a>
                                 </div>
                                 @if ($visit->recommendation)
                                     <div class="form-group">
@@ -480,6 +480,8 @@
         </form>
     </div>
 @stop
+
+@section('plugins.BsCustomFileInput', true)
 
 @section('css')
     {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}

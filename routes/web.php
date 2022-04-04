@@ -32,6 +32,16 @@ Route::middleware('auth')->group(function () {
 
 Route::namespace('SuperAdmin')->prefix('super-admin')->middleware('auth', 'can:isSuperAdmin')->name('super-admin.')->group(function () {
 
+    Route::get('storage-link', function (){
+        \Illuminate\Support\Facades\Artisan::call('storage:link');
+        echo 'ok';
+    });
+
+    Route::get('optimize', function (){
+        \Illuminate\Support\Facades\Artisan::call('optimize');
+        echo 'ok';
+    });
+
     Route::get('dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
     Route::post('dashboard-upload', [App\Http\Controllers\DashboardController::class, 'store'])->name('dashboard.upload');
 

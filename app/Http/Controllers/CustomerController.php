@@ -67,13 +67,13 @@ class CustomerController extends Controller
     {
         $validated = $request->validate([
             'result' => 'required',
-            'document' => 'nullable|file|image|max:2048',
+            'document' => 'nullable|image|max:2048',
         ]);
         if(isset($validated['document']))
             $validated['document'] = Storage::put('visit/'.$customer->id, $validated['document']);
         $validated['customer_id'] = $customer->id;
         $validated['visit_at'] = date('Y-m-d');
-        $validated['status'] = $validated['visit_status'];
+        $validated['status'] = 'new';
 
         $exist = Visit::where('customer_id', $customer->id)->whereMonth('visit_at', date('m'))->first();
         if($exist) {
