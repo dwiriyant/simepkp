@@ -75,13 +75,7 @@ class CustomerController extends Controller
         $validated['visit_at'] = date('Y-m-d');
         $validated['status'] = 'new';
 
-        $exist = Visit::where('customer_id', $customer->id)->whereMonth('visit_at', date('m'))->first();
-        if($exist) {
-            return redirect(route('credit-collection.customer.detail', $customer->id))->with('error', 'Anda sudah melakukan kunjungan bulan ini!');
-        }
-        else {
-            Visit::create($validated);
-        }
+        Visit::create($validated);
 
         // echo Auth::->user()->unreadNotifications;
         return redirect(route('credit-collection.customer.detail', $customer->id))->with('success', 'Berhasil membuat data kunjungan!');
