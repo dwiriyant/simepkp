@@ -108,7 +108,7 @@ class UserManagementController extends Controller
             'email' => 'required|email|unique:users,email,'.$user_management->id,
             'password' => 'nullable|confirmed|min:8',
         ]);
-        if($validated['role_id'] == 1 || $validated['role_id'] == 2) {
+        if($validated['role_id'] == 1 || $validated['role_id'] == 2 || $validated['role_id'] == 3) {
             unset($validated['branch_id']);
         }
         if(!$validated['password']) {
