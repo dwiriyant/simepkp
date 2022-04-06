@@ -27,7 +27,7 @@ class DashboardController extends Controller
     {
         $branches = Branch::all();
 
-        if(!Auth::user()->can('isSuperAdmin') && !Auth::user()->can('isHeadOfficeAdmin') && !Auth::user()->can('isSupervisor')) {
+        if(!Auth::user()->can('isSuperAdmin') && !Auth::user()->can('isHeadOfficeAdmin') && !Auth::user()->can('isSupervisor') && !Auth::user()->can('isSuperRole')) {
             $branches = Branch::where('id', Auth::user()->branch_id)->get();
         }
 
@@ -134,9 +134,9 @@ class DashboardController extends Controller
         $import = Excel::import(new DashboardsImport($request->branch_id), $request->file);
         
         if(Session::has('import_dashboard')) {
-            return redirect(route('super-admin.dashboard'));
+            return redirect(route(Auth::user()->Role->code.'.dashboard'));
         } else {
-            return redirect(route('super-admin.dashboard'))->with('success', 'Berhasil Upload Data Dashboard!');
+            return redirect(route(Auth::user()->Role->code.'.dashboard'))->with('success', 'Berhasil Upload Data Dashboard!');
         }
     }
 }

@@ -37,11 +37,11 @@
             </form>
         </div>
         <div class="col-md-4 col-lg-4 col-xl-2">
-            @can('isSuperAdmin')
+            @canany(['isSuperAdmin', 'isSuperRole'])
             <button type="button" class=" btn btn-warning " data-toggle="modal" data-target="#uploadModal">
                 <i class="fa fa-upload"></i>Upload
             </button>
-            @endcan
+            @endcanany
             <button type="button" class="btn btn-success float-lg-right" onclick="window.print();">
                 <i class="fa fa-print"></i> Export
             </button>
@@ -128,45 +128,47 @@
             <canvas id="npl-kredit" width="400" height="550"></canvas>
         </div>
     </div>
-    <!-- Modal -->
-    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="uploadModalLabel">Upload Data Dashboard</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <form action="{{route('super-admin.dashboard.upload')}}" method="post" enctype="multipart/form-data">
-                @csrf
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <x-adminlte-select name="branch_id" label="Kantor Cabang" data-placeholder="Pilih kantor cabang">
-                                @foreach ($branches as $branch)
-                                    <option value="{{ $branch->id }}">{{ $branch->code }}</option>
-                                @endforeach
-                            </x-adminlte-select>
-                            
-                            <x-adminlte-input-file name="file" label="File Excel" placeholder="Choose a file..." accept=".xls,.xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
-                                <x-slot name="prependSlot">
-                                    <div class="input-group-text bg-lightblue">
-                                        <i class="fas fa-upload"></i>
-                                    </div>
-                                </x-slot>
-                            </x-adminlte-input-file>                        
+    @canany(['isSuperAdmin', 'isSuperRole'])
+        <!-- Modal -->
+        <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="uploadModalLabel">Upload Data Dashboard</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <form action="{{route(Auth::user()->Role->code.'.dashboard.upload')}}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <x-adminlte-select name="branch_id" label="Kantor Cabang" data-placeholder="Pilih kantor cabang">
+                                    @foreach ($branches as $branch)
+                                        <option value="{{ $branch->id }}">{{ $branch->code }}</option>
+                                    @endforeach
+                                </x-adminlte-select>
+                                
+                                <x-adminlte-input-file name="file" label="File Excel" placeholder="Choose a file..." accept=".xls,.xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                    <x-slot name="prependSlot">
+                                        <div class="input-group-text bg-lightblue">
+                                            <i class="fas fa-upload"></i>
+                                        </div>
+                                    </x-slot>
+                                </x-adminlte-input-file>                        
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <x-adminlte-button class="btn-flat" label="Close" theme="secondary" icon="fas fa-lg fa-times" data-dismiss="modal"/>
-                    <x-adminlte-button class="btn-flat" type="submit" label="Upload" theme="success" icon="fas fa-lg fa-upload"/>
-                </div>
-            </form>
+                    <div class="modal-footer">
+                        <x-adminlte-button class="btn-flat" label="Close" theme="secondary" icon="fas fa-lg fa-times" data-dismiss="modal"/>
+                        <x-adminlte-button class="btn-flat" type="submit" label="Upload" theme="success" icon="fas fa-lg fa-upload"/>
+                    </div>
+                </form>
+            </div>
+            </div>
         </div>
-        </div>
-    </div>
+    @endcanany
 @stop
 
 @section('footer', true)

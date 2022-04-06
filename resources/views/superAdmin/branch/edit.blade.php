@@ -15,7 +15,7 @@
         <div class="card-header">
             <h3 class="card-title">Ubah Cabang : {{ $branch->name }}</h3>
         </div>
-        <form action="{{ route('super-admin.branch.update', $branch->id) }}" method="POST">
+        <form action="{{ route(Auth::user()->Role->code.'.branch.update', $branch->id) }}" method="POST">
             @csrf
             @method('PUT')
             <div class="card-body">

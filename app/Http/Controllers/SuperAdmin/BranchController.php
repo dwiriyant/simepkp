@@ -50,7 +50,7 @@ class BranchController extends Controller
         ]);
         Branch::create($validated);
         $request->session()->flash('success', 'Cabang : '.$validated['name'].' berhasil ditambahkan!');
-        return redirect(route('super-admin.branch.index'));
+        return redirect(route(Auth::user()->Role->code.'.branch.index'));
     }
 
     /**
@@ -96,7 +96,7 @@ class BranchController extends Controller
         $branch->fill($validated);
         $branch->save();
         $request->session()->flash('success', 'Cabang : '.$branch['name'].' berhasil diubah!');
-        return redirect(route('super-admin.branch.index'));
+        return redirect(route(Auth::user()->Role->code.'.branch.index'));
     }
 
     /**
@@ -109,6 +109,6 @@ class BranchController extends Controller
     {
         $branch->delete();
         $request->session()->flash('success', 'Cabang : '.$branch['name'].' berhasil diubah!');
-        return redirect(route('super-admin.branch.index'));
+        return redirect(route(Auth::user()->Role->code.'.branch.index'));
     }
 }

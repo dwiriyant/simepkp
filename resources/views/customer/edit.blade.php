@@ -101,7 +101,7 @@
                                 <i class="fas fa-fw fa-save"></i> KIRIM
                             </button>
 
-                            <!-- Modal Delete Confirmation -->
+                            <!--  Modal Confirmation -->
                             <div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
@@ -119,6 +119,288 @@
                                 </div>
                             </div>
                         @else
+                        @can('isSuperRole')
+                            @if ($visit->status != "action_realized")
+                            <div class="form-group">
+                                <x-adminlte-textarea label="HASIL KUNJUNGAN" rows="4" name="result" enable-old-support  readonly >
+                                    {{ isset($visit) ? $visit->result : '' }}
+                                </x-adminlte-textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="">FOTO</label>
+                                <br>
+                                @if ($visit->document)
+                                <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Foto</a>
+                                @else
+                                <p>tidak ada foto</p>    
+                                @endif
+                            </div>
+                            @endif
+                            @if ($visit->status == "new" || $visit->status == "recommendation_revision")
+                                <div class="form-group">
+                                    <x-adminlte-textarea label="REKOMENDASI" rows="4" name="recommendation" enable-old-support>
+                                        {{ isset($visit->recommendation) ? $visit->recommendation->recommendation : '' }}
+                                    </x-adminlte-textarea>
+                                </div>
+
+                            @endif
+                            
+                            @if ($visit->status == "recommendation_revision")
+                            <div class="form-group">
+                                <x-adminlte-select name="recommendation_status" label="APPROVAL REKOMENDASI" required enable-old-support disabled>
+                                    <x-adminlte-options :options="['recommendation_approve' => 'Setujui', 'recommendation_revision' => 'Perbaiki']" :selected="$visit->status"/>
+                                </x-adminlte-select>
+                            </div>
+                            @endif
+                            @if ($visit->status == "recommendation_revision")
+                                <div class="form-group" id="recommendation_revision" style="display: none;">
+                                    <x-adminlte-textarea label="KESALAHAN/PERBAIKAN ATAS REKOMENDASI" rows="4" name="recommendation_correction" enable-old-support readonly>
+                                        {{ isset($visit->recommendation) ? $visit->recommendation->recommendation_correction : '' }}
+                                    </x-adminlte-textarea>
+                                </div>
+                            @endif
+                            @if ($visit->status == "action_approve" || $visit->status == 'input_deadline' || $visit->status == 'recommendation_validation' || $visit->status == 'recommendation_approve' || $visit->status == 'action_validation' || $visit->status == 'action_revision')
+                                <div class="form-group">
+                                    <x-adminlte-textarea label="REKOMENDASI" rows="4" name="recommendation" enable-old-support readonly>
+                                        {{ isset($visit->recommendation) ? $visit->recommendation->recommendation : '' }}
+                                    </x-adminlte-textarea>
+                                </div>
+                            @endif
+                            @if ($visit->status == "action_approve" || $visit->status == 'input_deadline' || $visit->status == 'action_validation')
+                                
+                                <div class="form-group" id="recommendation_revision" style="display: none;">
+                                    <x-adminlte-textarea label="KESALAHAN/PERBAIKAN ATAS REKOMENDASI" rows="4" name="recommendation_correction" enable-old-support readonly>
+                                        {{ isset($visit->recommendation) ? $visit->recommendation->recommendation_correction : '' }}
+                                    </x-adminlte-textarea>
+                                </div>
+                                <x-adminlte-textarea label="ACTION PLAN" rows="4" name="action" enable-old-support readonly>
+                                    {{ isset($visit->action_plan) ? $visit->action_plan->action : '' }}
+                                </x-adminlte-textarea>
+                            @endif
+                            @if ($visit->status == "action_approve")
+                                <div class="form-group">
+                                    <x-adminlte-input label="DEADLINE" type="date" name="deadline" value="{{ isset($visit->action_plan) ? $visit->action_plan->deadline : '' }}" />
+                                </div>
+                                <br>
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#sendModal" title="Hapus Data Cabang">
+                                    <i class="fas fa-fw fa-save"></i> KIRIM
+                                </button>
+
+                                <!--  Modal Confirmation -->
+                                <div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h4 id="send_dialog">Apakah Anda yakin akan mengirim Deadline tersebut?</h4>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default waves-effect remove-data-from-delete-form" data-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-success waves-effect waves-light">KIRIM</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                            @if ($visit->status == 'new' || $visit->status == 'recommendation_revision')
+                                <br>
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#sendModal" title="Hapus Data Cabang">
+                                    <i class="fas fa-fw fa-save"></i> KIRIM
+                                </button>
+
+                                <!--  Modal Confirmation -->
+                                <div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h4 id="send_dialog">Apakah Anda yakin akan mengirim Rekomendasi tersebut?</h4>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default waves-effect remove-data-from-delete-form" data-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-success waves-effect waves-light">KIRIM</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                            @if ($visit->status == 'recommendation_validation')
+                                <div class="form-group">
+                                    <x-adminlte-select name="recommendation_status" label="APPROVAL REKOMENDASI" required enable-old-support>
+                                        <x-adminlte-options :options="['recommendation_approve' => 'Setujui', 'recommendation_revision' => 'Perbaiki']" :selected="$visit->status"/>
+                                    </x-adminlte-select>
+                                </div>
+                                <div class="form-group" id="recommendation_revision" style="display: none;">
+                                    <x-adminlte-textarea label="KESALAHAN/PERBAIKAN ATAS REKOMENDASI" rows="4" name="recommendation_correction" enable-old-support>
+                                        {{ isset($visit->recommendation) ? $visit->recommendation->recommendation_correction : '' }}
+                                    </x-adminlte-textarea>
+                                </div>
+                                <br>
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#sendModal" title="Hapus Data Cabang">
+                                    <i class="fas fa-fw fa-save"></i> KIRIM
+                                </button>
+
+                                <!--  Modal Confirmation -->
+                                <div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h4 id="send_dialog"></h4>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default waves-effect remove-data-from-delete-form" data-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-success waves-effect waves-light">KIRIM</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                            @if ($visit->status == 'recommendation_approve' || $visit->status == 'action_revision')
+                            <div class="form-group">
+                                <x-adminlte-textarea label="ACTION PLAN" rows="4" name="action" enable-old-support>
+                                    {{ isset($visit->action_plan) ? $visit->action_plan->action : '' }}
+                                </x-adminlte-textarea>
+                            </div>
+                            @endif
+                            @if ($visit->status == 'action_validation')
+                                <div class="form-group">
+                                    <x-adminlte-select name="action_status" label="APPROVAL ACTION PLAN" required enable-old-support>
+                                        <x-adminlte-options :options="['action_approve' => 'Setujui', 'action_revision' => 'Perbaiki']" :selected="$visit->status"/>
+                                    </x-adminlte-select>
+                                </div>
+                                <div class="form-group" id="action_revision" style="display: none;">
+                                    <x-adminlte-textarea label="KESALAHAN/PERBAIKAN ATAS ACTION PLAN" rows="4" name="action_correction" enable-old-support required>
+                                        {{ isset($visit->action_plan) ? $visit->action_plan->action_correction : '' }}
+                                    </x-adminlte-textarea>
+                                </div>
+                                <br>
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#sendModal" title="Hapus Data Cabang">
+                                    <i class="fas fa-fw fa-save"></i> KIRIM
+                                </button>
+
+                                <!--  Modal Confirmation -->
+                                <div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h4 id="send_dialog"></h4>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default waves-effect remove-data-from-delete-form" data-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-success waves-effect waves-light">KIRIM</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @elseif($visit->status == 'action_revision')
+                                <div class="form-group">
+                                    <x-adminlte-select name="action_status" label="APPROVAL ACTION PLAN" disabled enable-old-support>
+                                        <x-adminlte-options :options="['action_approve' => 'Setujui', 'action_revision' => 'Perbaiki']" :selected="$visit->status"/>
+                                    </x-adminlte-select>
+                                </div>
+                                <div class="form-group" id="action_revision" style="display: none;">
+                                    <x-adminlte-textarea label="KESALAHAN/PERBAIKAN ATAS ACTION PLAN" rows="4" name="action_correction" enable-old-support disabled>
+                                        {{ isset($visit->action_plan) ? $visit->action_plan->action_correction : '' }}
+                                    </x-adminlte-textarea>
+                                </div>
+                            @endif
+                            @if ($visit->status == 'recommendation_approve' || $visit->status == 'action_revision')
+                                <br>
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#sendModal" title="Hapus Data Cabang">
+                                    <i class="fas fa-fw fa-save"></i> KIRIM
+                                </button>
+
+                                <!--  Modal Confirmation -->
+                                <div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h4 id="send_dialog">Apakah Anda yakin akan mengirim Action Plan tersebut?</h4>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default waves-effect remove-data-from-delete-form" data-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-success waves-effect waves-light">KIRIM</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                            @if ($visit->status == 'input_deadline')
+                                <div class="form-group">
+                                    <x-adminlte-input label="DEADLINE" type="date" name="deadline" value="{{ isset($visit->action_plan) ? $visit->action_plan->deadline : '' }}" readonly />
+                                </div>
+                                <br>
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#sendModal" title="Hapus Data Cabang">
+                                    <i class="fas fa-fw fa-save"></i> ACTION PLAN SUDAH DILAKUKAN
+                                </button>
+
+                                <!--  Modal Confirmation -->
+                                <div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h4 id="send_dialog">Apakah Anda yakin Action Plan sudah dilakukan?</h4>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default waves-effect remove-data-from-delete-form" data-dismiss="modal">Batal</button>
+                                                <button type="submit" name="action" value="action_realized" class="btn btn-success waves-effect waves-light">KIRIM</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                            @if ($visit->status == 'action_realized')
+                                <div class="form-group">
+                                    <x-adminlte-textarea label="HASIL KUNJUNGAN" rows="4" name="result" enable-old-support  readonly >
+                                        {{ isset($visit) ? $visit->result : '' }}
+                                    </x-adminlte-textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="">FOTO</label>
+                                    <br>
+                                    @if ($visit->document)
+                                    <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Foto</a>
+                                    @else
+                                    <p>tidak ada foto</p>    
+                                    @endif
+                                    
+                                </div>
+                                @if ($visit->recommendation)
+                                    <div class="form-group">
+                                        <x-adminlte-textarea label="REKOMENDASI" rows="4" name="recommendation" enable-old-support readonly>
+                                            {{ isset($visit->recommendation) ? $visit->recommendation->recommendation : '' }}
+                                        </x-adminlte-textarea>
+                                    </div>
+                                @endif
+                                @if ($visit->action_plan)
+                                    <x-adminlte-textarea label="ACTION PLAN" rows="4" name="action" enable-old-support readonly>
+                                        {{ isset($visit->action_plan) ? $visit->action_plan->action : '' }}
+                                    </x-adminlte-textarea>
+                                    <div class="form-group">
+                                        <x-adminlte-input label="DEADLINE" type="date" name="deadline" value="{{ isset($visit->action_plan) ? $visit->action_plan->deadline : '' }}" readonly />
+                                    </div>
+                                    <div class="form-group">
+                                        <x-adminlte-input label="TANGGAL PENYELESAIAN" type="date" name="completion_date" value="{{ isset($visit->action_plan) ? $visit->action_plan->completion_date : '' }}" readonly />
+                                    </div>
+                                @endif
+                            @endif
+                        @endcan
                             @can('isHeadOfficeAdmin')
                                 <div class="form-group">
                                     <x-adminlte-textarea label="HASIL KUNJUNGAN" rows="4" name="result" enable-old-support  readonly >
@@ -128,7 +410,11 @@
                                 <div class="form-group">
                                     <label for="">FOTO</label>
                                     <br>
-                                    <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat File</a>
+                                    @if ($visit->document)
+                                    <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Foto</a>
+                                    @else
+                                    <p>tidak ada foto</p>    
+                                    @endif
                                 </div>
                                 @if ($visit->status == "new" || $visit->status == "recommendation_revision")
                                     <div class="form-group">
@@ -181,7 +467,7 @@
                                         <i class="fas fa-fw fa-save"></i> KIRIM
                                     </button>
 
-                                    <!-- Modal Delete Confirmation -->
+                                    <!--  Modal Confirmation -->
                                     <div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-lg" role="document">
                                             <div class="modal-content">
@@ -205,7 +491,7 @@
                                         <i class="fas fa-fw fa-save"></i> KIRIM
                                     </button>
 
-                                    <!-- Modal Delete Confirmation -->
+                                    <!--  Modal Confirmation -->
                                     <div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-lg" role="document">
                                             <div class="modal-content">
@@ -233,7 +519,11 @@
                                 <div class="form-group">
                                     <label for="">FOTO</label>
                                     <br>
+                                    @if ($visit->document)
                                     <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Foto</a>
+                                    @else
+                                    <p>tidak ada foto</p>    
+                                    @endif
                                 </div>
                                 <div class="form-group">
                                     <x-adminlte-textarea label="REKOMENDASI" rows="4" name="recommendation" enable-old-support readonly>
@@ -251,15 +541,12 @@
                                             {{ isset($visit->recommendation) ? $visit->recommendation->recommendation_correction : '' }}
                                         </x-adminlte-textarea>
                                     </div>
-                                @endif
-                                
-                                @if ($visit->status == 'recommendation_validation')
                                     <br>
                                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#sendModal" title="Hapus Data Cabang">
                                         <i class="fas fa-fw fa-save"></i> KIRIM
                                     </button>
 
-                                    <!-- Modal Delete Confirmation -->
+                                    <!--  Modal Confirmation -->
                                     <div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-lg" role="document">
                                             <div class="modal-content">
@@ -287,7 +574,11 @@
                                 <div class="form-group">
                                     <label for="">FOTO</label>
                                     <br>
+                                    @if ($visit->document)
                                     <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Foto</a>
+                                    @else
+                                    <p>tidak ada foto</p>    
+                                    @endif
                                 </div>
                                 <div class="form-group">
                                     <x-adminlte-textarea label="REKOMENDASI" rows="4" name="recommendation" enable-old-support readonly>
@@ -322,7 +613,7 @@
                                         <i class="fas fa-fw fa-save"></i> KIRIM
                                     </button>
 
-                                    <!-- Modal Delete Confirmation -->
+                                    <!--  Modal Confirmation -->
                                     <div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-lg" role="document">
                                             <div class="modal-content">
@@ -349,7 +640,7 @@
                                         <i class="fas fa-fw fa-save"></i> ACTION PLAN SUDAH DILAKUKAN
                                     </button>
 
-                                    <!-- Modal Delete Confirmation -->
+                                    <!--  Modal Confirmation -->
                                     <div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-lg" role="document">
                                             <div class="modal-content">
@@ -377,7 +668,11 @@
                                 <div class="form-group">
                                     <label for="">FOTO</label>
                                     <br>
+                                    @if ($visit->document)
                                     <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Foto</a>
+                                    @else
+                                    <p>tidak ada foto</p>    
+                                    @endif
                                 </div>
                                 <div class="form-group">
                                     <x-adminlte-textarea label="REKOMENDASI" rows="4" name="recommendation" enable-old-support readonly>
@@ -405,7 +700,7 @@
                                         <i class="fas fa-fw fa-save"></i> KIRIM
                                     </button>
 
-                                    <!-- Modal Delete Confirmation -->
+                                    <!--  Modal Confirmation -->
                                     <div class="modal fade" id="sendModal" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-lg" role="document">
                                             <div class="modal-content">
@@ -444,7 +739,12 @@
                                 <div class="form-group">
                                     <label for="">FOTO</label>
                                     <br>
+                                    @if ($visit->document)
                                     <a target="_blank" href="{{asset('storage/'.$visit->document)}}">Lihat Foto</a>
+                                    @else
+                                    <p>tidak ada foto</p>    
+                                    @endif
+                                    
                                 </div>
                                 @if ($visit->recommendation)
                                     <div class="form-group">
@@ -454,6 +754,9 @@
                                     </div>
                                 @endif
                                 @if ($visit->action_plan)
+                                    <x-adminlte-textarea label="ACTION PLAN" rows="4" name="action" enable-old-support readonly>
+                                        {{ isset($visit->action_plan) ? $visit->action_plan->action : '' }}
+                                    </x-adminlte-textarea>
                                     <div class="form-group">
                                         <x-adminlte-input label="DEADLINE" type="date" name="deadline" value="{{ isset($visit->action_plan) ? $visit->action_plan->deadline : '' }}" readonly />
                                     </div>

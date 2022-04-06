@@ -101,3 +101,20 @@ Route::namespace('CreditCollection')->prefix('credit-collection')->middleware('a
     Route::get('customer/edit-visit/{visit}', [App\Http\Controllers\CustomerController::class, 'edit_visit'])->name('customer.edit-visit');
     Route::put('customer/update-visit/{visit}', [App\Http\Controllers\CustomerController::class, 'update_visit'])->name('customer.update-visit');
 });
+
+Route::namespace('SuperAdmin')->prefix('super-role')->middleware('auth', 'can:isSuperRole')->name('super-role.')->group(function () {
+
+    Route::get('dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+    Route::post('dashboard-upload', [App\Http\Controllers\DashboardController::class, 'store'])->name('dashboard.upload');
+
+    Route::get('customer', [App\Http\Controllers\CustomerController::class, 'index'])->name('customer.index');
+    Route::post('customer/upload', [App\Http\Controllers\CustomerController::class, 'store'])->name('customer.upload');
+    Route::get('customer/detail/{customer}', [App\Http\Controllers\CustomerController::class, 'detail'])->name('customer.detail');
+    Route::get('customer/create-visit/{customer}', [App\Http\Controllers\CustomerController::class, 'create_visit'])->name('customer.create-visit');
+    Route::post('customer/store-visit/{customer}', [App\Http\Controllers\CustomerController::class, 'store_visit'])->name('customer.store-visit');
+    Route::get('customer/edit-visit/{visit}', [App\Http\Controllers\CustomerController::class, 'edit_visit'])->name('customer.edit-visit');
+    Route::put('customer/update-visit/{visit}', [App\Http\Controllers\CustomerController::class, 'update_visit'])->name('customer.update-visit');
+
+    Route::resource('user-management', UserManagementController::class);
+    Route::resource('branch', BranchController::class);
+});

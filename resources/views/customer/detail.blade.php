@@ -17,13 +17,13 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="float-left"><b>Data Kunjungan Nasabah : {{ $customer->name }}</b> </h4>
-                    @can('isCreditCollection')
+                    @canany(['isCreditCollection', 'isSuperRole'])
                     <a href="{{ route(Auth::user()->Role->code.'.customer.create-visit', $customer->id) }}">
                         <button type="button" class="btn btn-warning float-right">
                             <i class="fa fa-plus"></i> Tambah Kunjungan
                         </button>
                     </a>                    
-                    @endcan
+                    @endcanany
                 </div>
                 <div class="card-body">
                     <div id="example2_wrapper" class="dataTables_wrapper dt-bootstrap4">
@@ -50,43 +50,43 @@
                                             @php
                                                 $warn = '';
                                                 $button = '';
-                                                if($visit->status == 'new' && Gate::check('isHeadOfficeAdmin')) {
+                                                if($visit->status == 'new' && (Gate::check('isHeadOfficeAdmin') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-warning';
                                                     $button = 'Edit';
                                                 }
-                                                if($visit->status == 'action_approve' && Gate::check('isHeadOfficeAdmin')) {
+                                                if($visit->status == 'action_approve' && (Gate::check('isHeadOfficeAdmin') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-warning';
                                                     $button = 'Edit';
                                                 }
-                                                if($visit->status == 'recommendation_validation' && Gate::check('isSupervisor')) {
+                                                if($visit->status == 'recommendation_validation' && (Gate::check('isSupervisor') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-warning';
                                                     $button = 'Edit';
                                                 }
-                                                if($visit->status == 'recommendation_approve' && Gate::check('isCreditCollection')) {
+                                                if($visit->status == 'recommendation_approve' && (Gate::check('isCreditCollection') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-warning';
                                                     $button = 'Edit';
                                                 }                                                
-                                                if($visit->status == 'input_deadline' && Gate::check('isCreditCollection')) {
+                                                if($visit->status == 'input_deadline' && (Gate::check('isCreditCollection') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-info';
                                                     $button = 'Edit';
                                                 }
-                                                if($visit->status == 'action_validation' && Gate::check('isCreditManager')) {
+                                                if($visit->status == 'action_validation' && (Gate::check('isCreditManager') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-warning';
                                                     $button = 'Edit';
                                                 }
-                                                if($visit->status == 'action_realized' && Gate::check('isCreditManager')) {
+                                                if($visit->status == 'action_realized' && (Gate::check('isCreditManager') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-success';
                                                     $button = 'Lihat';
                                                 }
-                                                if($visit->status == 'action_realized' && Gate::check('isHeadOfficeAdmin')) {
+                                                if($visit->status == 'action_realized' && (Gate::check('isHeadOfficeAdmin') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-success';
                                                     $button = 'Lihat';
                                                 }
-                                                if($visit->status == 'recommendation_revision' && Gate::check('isHeadOfficeAdmin')) {
+                                                if($visit->status == 'recommendation_revision' && (Gate::check('isHeadOfficeAdmin') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-danger';
                                                     $button = 'Edit';
                                                 }
-                                                if($visit->status == 'action_revision' && Gate::check('isCreditCollection')) {
+                                                if($visit->status == 'action_revision' && (Gate::check('isCreditCollection') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-danger';
                                                     $button = 'Edit';
                                                 }

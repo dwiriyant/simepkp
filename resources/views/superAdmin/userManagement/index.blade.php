@@ -20,7 +20,7 @@
                             <h3 class="card-title">List Data User</h3>
                         </div>
                         <div class="col-md-6 text-right">
-                            <a href="{{route('super-admin.user-management.create')}}" class="btn btn-primary">
+                            <a href="{{route(Auth::user()->Role->code.'.user-management.create')}}" class="btn btn-primary">
                                 <i class="fas fa-fw fa-plus"></i> Tambah User
                             </a>
                         </div>
@@ -49,10 +49,10 @@
                                                 <td>{{ $user->email }}</td>
                                                 <td>{{ $user->Role->name }}</td>
                                                 <td>
-                                                    <a href="{{ route('super-admin.user-management.edit', $user->id) }}" class="btn btn-warning" title="Ubah Data User">
+                                                    <a href="{{ route(Auth::user()->Role->code.'.user-management.edit', $user->id) }}" class="btn btn-warning" title="Ubah Data User">
                                                         <i class="fas fa-fw fa-edit"></i> Ubah
                                                     </a>
-                                                    <form action="{{route('super-admin.user-management.destroy', $user->id)}}" method="post" style="display: inline">
+                                                    <form action="{{route(Auth::user()->Role->code.'.user-management.destroy', $user->id)}}" method="post" style="display: inline">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{$user->id}}" title="Hapus Data User">

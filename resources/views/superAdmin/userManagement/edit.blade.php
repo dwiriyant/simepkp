@@ -15,7 +15,7 @@
         <div class="card-header">
             <h3 class="card-title">Ubah User : {{ $user->name }}</h3>
         </div>
-        <form action="{{ route('super-admin.user-management.update', $user->id) }}" method="POST">
+        <form action="{{ route(Auth::user()->Role->code.'.user-management.update', $user->id) }}" method="POST">
             @csrf
             @method('PUT')
             <div class="card-body">

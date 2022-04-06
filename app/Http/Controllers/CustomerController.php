@@ -39,9 +39,9 @@ class CustomerController extends Controller
         $import = Excel::import(new CustomersImport, $request->file);
         
         if(Session::has('import_customer')) {
-            return redirect(route('super-admin.customer.index'));
+            return redirect(route(Auth::user()->Role->code.'.customer.index'));
         } else {
-            return redirect(route('super-admin.customer.index'))->with('success', 'Berhasil Upload Data Nasabah!');
+            return redirect(route(Auth::user()->Role->code.'.customer.index'))->with('success', 'Berhasil Upload Data Nasabah!');
         }
     }
 
@@ -78,7 +78,7 @@ class CustomerController extends Controller
         Visit::create($validated);
 
         // echo Auth::->user()->unreadNotifications;
-        return redirect(route('credit-collection.customer.detail', $customer->id))->with('success', 'Berhasil membuat data kunjungan!');
+        return redirect(route(Auth::user()->Role->code.'.customer.detail', $customer->id))->with('success', 'Berhasil membuat data kunjungan!');
     }
 
     public function edit_visit(Request $request, Visit $visit)
@@ -179,7 +179,90 @@ class CustomerController extends Controller
                 ],
                 $input,
             );
-        }
+        } else if (Auth::user()->Role->code == "super-role") {
+            if($visit->status == 'new' || $visit->status == 'recommendation_revision') {
+                $validated = $request->validate([
+                    'recommendation' => 'required|string',
+                ]);
+                $input = $validated;
+                $visit->status = 'recommendation_validation';
+                $visit->save();
+                Recommendation::updateOrCreate(
+                    [
+                        'visit_id' => $visit->id,
+                    ],
+                    $input,
+                );
+            } else if($visit->status == 'recommendation_validation') {
+                $validated = $request->validate([
+                    'recommendation' => 'required|string',
+                    'recommendation_status' => 'required|in:recommendation_approve,recommendation_revision',
+                    'recommendation_correction' => 'required_if:recommendation_status,==,recommendation_revision'
+                ]);
+                $input['recommendation'] = $validated['recommendation'];
+                if($validated['recommendation_correction'])
+                    $input['recommendation_correction'] = $validated['recommendation_correction'];
+                $visit->status = $validated['recommendation_status'];
+                $visit->save();
+                Recommendation::updateOrCreate(
+                    [
+                        'visit_id' => $visit->id,
+                    ],
+                    $input,
+                );
+            } else if ($visit->status == 'recommendation_approve' || $visit->status == 'action_revision') {
+                $validated = $request->validate([
+                    'action' => 'required|string',
+                ]);
+                ActionPlan::updateOrCreate(
+                    [
+                        'visit_id' => $visit->id,
+                    ],
+                    $validated,
+                );
+                $visit->status = 'action_validation';
+                $visit->save();
+            } else if ($visit->status == 'action_validation') {
+                $validated = $request->validate([
+                    'action' => 'required|string',
+                    'action_status' => 'required|in:action_approve,action_revision',
+                    'action_correction' => 'required_if:action_status,==,action_revision'
+                ]);
+                $input['action'] = $validated['action'];
+                if($validated['action_correction'])
+                    $input['action_correction'] = $validated['action_correction'];
+                $visit->status = $validated['action_status'];
+                $visit->save();
+                ActionPlan::updateOrCreate(
+                    [
+                        'visit_id' => $visit->id,
+                    ],
+                    $input,
+                );
+            } else if($visit->status == 'action_approve') {
+                $validated = $request->validate([
+                    'deadline' => 'required|date',
+                ]);
+                $action_plan = ActionPlan::where('visit_id', $visit->id)->first();
+                if($action_plan) {
+                    $action_plan->deadline = $validated['deadline'];
+                    $action_plan->save();
+                }
+                $visit->status = 'input_deadline';
+                $visit->save();   
+            } else if($visit->status == 'input_deadline') {
+                $validated = $request->validate([
+                    'action' => 'required|in:action_realized',
+                ]);
+                $action_plan = ActionPlan::where('visit_id', $visit->id)->first();
+                if($action_plan) {
+                    $action_plan->completion_date = date('Y-m-d');
+                    $action_plan->save();
+                }
+                $visit->status = 'action_realized';
+                $visit->save();
+            }
+        } 
         
         return redirect(route(Auth::user()->Role->code.'.customer.detail', $visit->customer->id))->with('success', 'Berhasil mengubah data kunjungan!');
     }

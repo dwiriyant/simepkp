@@ -19,11 +19,11 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="float-left"><b>Data Nasabah</b> </h4>
-                    @can('isSuperAdmin')
+                    @canany(['isSuperAdmin', 'isSuperRole'])
                     <button type="button" class="btn btn-warning float-right" data-toggle="modal" data-target="#uploadModal">
                         <i class="fa fa-upload"></i> Upload
                     </button>
-                    @endcan
+                    @endcanany
                 </div>
                 <div class="card-body">
                     <div id="example2_wrapper" class="dataTables_wrapper dt-bootstrap4">
@@ -52,34 +52,34 @@
                                             @php
                                                 $last_visit = $customer->visit->sortByDesc('visit_at')->first();
                                                 $warn = '';
-                                                if($last_visit && $last_visit->status == 'new' && Gate::check('isHeadOfficeAdmin')) {
+                                                if($last_visit && $last_visit->status == 'new' && (Gate::check('isHeadOfficeAdmin') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-warning';
                                                 }
-                                                if($last_visit && $last_visit->status == 'action_approve' && Gate::check('isHeadOfficeAdmin')) {
+                                                if($last_visit && $last_visit->status == 'action_approve' && (Gate::check('isHeadOfficeAdmin') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-warning';
                                                 }
-                                                if($last_visit && $last_visit->status == 'recommendation_validation' && Gate::check('isSupervisor')) {
+                                                if($last_visit && $last_visit->status == 'recommendation_validation' && (Gate::check('isSupervisor') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-warning';
                                                 }
-                                                if($last_visit && $last_visit->status == 'recommendation_approve' && Gate::check('isCreditCollection')) {
+                                                if($last_visit && $last_visit->status == 'recommendation_approve' && (Gate::check('isCreditCollection') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-warning';
                                                 }
-                                                if($last_visit && $last_visit->status == 'input_deadline' && Gate::check('isCreditCollection')) {
+                                                if($last_visit && $last_visit->status == 'input_deadline' && (Gate::check('isCreditCollection') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-warning';
                                                 }
-                                                if($last_visit && $last_visit->status == 'action_validation' && Gate::check('isCreditManager')) {
+                                                if($last_visit && $last_visit->status == 'action_validation' && (Gate::check('isCreditManager') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-warning';
                                                 }
-                                                if($last_visit && $last_visit->status == 'action_realized' && Gate::check('isCreditManager')) {
+                                                if($last_visit && $last_visit->status == 'action_realized' && (Gate::check('isCreditManager') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-success';
                                                 }
-                                                if($last_visit && $last_visit->status == 'action_realized' && Gate::check('isHeadOfficeAdmin')) {
+                                                if($last_visit && $last_visit->status == 'action_realized' && (Gate::check('isHeadOfficeAdmin') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-success';
                                                 }
-                                                if($last_visit && $last_visit->status == 'recommendation_revision' && Gate::check('isHeadOfficeAdmin')) {
+                                                if($last_visit && $last_visit->status == 'recommendation_revision' && (Gate::check('isHeadOfficeAdmin') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-danger';
                                                 }
-                                                if($last_visit && $last_visit->status == 'action_revision' && Gate::check('isCreditCollection')) {
+                                                if($last_visit && $last_visit->status == 'action_revision' && (Gate::check('isCreditCollection') || Gate::check('isSuperRole'))) {
                                                     $warn = 'table-danger';
                                                 }
                                             @endphp
@@ -131,38 +131,40 @@
         </div>
     </div>
     <!-- Modal -->
-    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="uploadModalLabel">Upload Data Nasabah</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <form action="{{route('super-admin.customer.upload')}}" method="post" enctype="multipart/form-data">
-                @csrf
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">                            
-                            <x-adminlte-input-file name="file" label="File Excel" placeholder="Choose a file..." accept=".xls,.xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
-                                <x-slot name="prependSlot">
-                                    <div class="input-group-text bg-lightblue">
-                                        <i class="fas fa-upload"></i>
-                                    </div>
-                                </x-slot>
-                            </x-adminlte-input-file>                        
+    @canany(['isSuperAdmin', 'isSuperRole'])
+        <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="uploadModalLabel">Upload Data Nasabah</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <form action="{{route(Auth::user()->Role->code.'.customer.upload')}}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">                            
+                                <x-adminlte-input-file name="file" label="File Excel" placeholder="Choose a file..." accept=".xls,.xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                    <x-slot name="prependSlot">
+                                        <div class="input-group-text bg-lightblue">
+                                            <i class="fas fa-upload"></i>
+                                        </div>
+                                    </x-slot>
+                                </x-adminlte-input-file>                        
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <x-adminlte-button class="btn-flat" label="Close" theme="secondary" icon="fas fa-lg fa-times" data-dismiss="modal"/>
-                    <x-adminlte-button class="btn-flat" type="submit" label="Upload" theme="success" icon="fas fa-lg fa-upload"/>
-                </div>
-            </form>
+                    <div class="modal-footer">
+                        <x-adminlte-button class="btn-flat" label="Close" theme="secondary" icon="fas fa-lg fa-times" data-dismiss="modal"/>
+                        <x-adminlte-button class="btn-flat" type="submit" label="Upload" theme="success" icon="fas fa-lg fa-upload"/>
+                    </div>
+                </form>
+            </div>
+            </div>
         </div>
-        </div>
-    </div>
+    @endcanany
 @stop
 
 @section('plugins.Datatables', true)

@@ -15,7 +15,7 @@
         <div class="card-header">
             <h3 class="card-title">Tambah Cabang Baru</h3>
         </div>
-        <form action="{{ route('super-admin.branch.store') }}" method="POST">
+        <form action="{{ route(Auth::user()->Role->code.'.branch.store') }}" method="POST">
             @csrf
             <div class="card-body">
                 @include('layouts.alert')

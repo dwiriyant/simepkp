@@ -52,6 +52,10 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('isCreditCollection', function($user) {
             return $user->Role->code == 'credit-collection';
         });
+
+        Gate::define('isSuperRole', function($user) {
+            return $user->Role->code == 'super-role';
+        });
         
     }
 }

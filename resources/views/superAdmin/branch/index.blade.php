@@ -20,7 +20,7 @@
                             <h3 class="card-title">List Data Cabang</h3>
                         </div>
                         {{-- <div class="col-md-6 text-right">
-                            <a href="{{route('super-admin.branch.create')}}" class="btn btn-primary">
+                            <a href="{{route(Auth::user()->Role->code.'.branch.create')}}" class="btn btn-primary">
                                 <i class="fas fa-fw fa-plus"></i> Tambah Cabang
                             </a>
                         </div> --}}
@@ -53,10 +53,10 @@
                                                 <td>{{ $branch->city }}</td>
                                                 <td>{{ $branch->province }}</td>
                                                 <td>
-                                                    <a href="{{ route('super-admin.branch.edit', $branch->id) }}" class="btn btn-warning" title="Ubah Data Cabang">
+                                                    <a href="{{ route(Auth::user()->Role->code.'.branch.edit', $branch->id) }}" class="btn btn-warning" title="Ubah Data Cabang">
                                                         <i class="fas fa-fw fa-edit"></i> Ubah
                                                     </a>
-                                                    {{-- <form action="{{route('super-admin.branch.destroy', $branch->id)}}" method="post" style="display: inline">
+                                                    {{-- <form action="{{route(Auth::user()->Role->code.'.branch.destroy', $branch->id)}}" method="post" style="display: inline">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{$branch->id}}" title="Hapus Data Cabang">

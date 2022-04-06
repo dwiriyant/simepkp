@@ -249,6 +249,12 @@ return [
         ],
         [
             'text' => 'Dashboard',
+            'route' => 'super-role.dashboard',
+            'icon' => 'fas fa-fw fa-home',
+            'can' => 'isSuperRole',
+        ],
+        [
+            'text' => 'Dashboard',
             'route' => 'head-office-admin.dashboard',
             'icon' => 'fas fa-fw fa-home',
             'can' => 'isHeadOfficeAdmin',
@@ -290,10 +296,22 @@ return [
             'can' => 'isSuperAdmin',
         ],
         [
+            'text' => 'Data Cabang',
+            'route'  => 'super-role.branch.index',
+            'icon' => 'fas fa-fw fa-code-branch',
+            'can' => 'isSuperRole',
+        ],
+        [
             'text' => 'Data Nasabah',
             'route' => 'super-admin.customer.index',
             'icon' => 'fas fa-fw fa-user',
             'can' => 'isSuperAdmin',
+        ],
+        [
+            'text' => 'Data Nasabah',
+            'route' => 'super-role.customer.index',
+            'icon' => 'fas fa-fw fa-user',
+            'can' => 'isSuperRole',
         ],
         [
             'text' => 'Data Nasabah',
@@ -342,6 +360,12 @@ return [
             'route'  => 'super-admin.user-management.index',
             'icon' => 'fas fa-fw fa-user',
             'can' => 'isSuperAdmin',
+        ],
+        [
+            'text' => 'Management User',
+            'route'  => 'super-role.user-management.index',
+            'icon' => 'fas fa-fw fa-user',
+            'can' => 'isSuperRole',
         ],
         // [
         //     'text'    => 'multilevel',

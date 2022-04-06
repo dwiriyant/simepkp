@@ -61,7 +61,7 @@ class UserManagementController extends Controller
         }
         User::create($validated);
         $request->session()->flash('success', 'User : '.$validated['name'].' berhasil ditambahkan!');
-        return redirect(route('super-admin.user-management.index'));
+        return redirect(route(Auth::user()->Role->code.'.user-management.index'));
     }
 
     /**
@@ -117,7 +117,7 @@ class UserManagementController extends Controller
         $user_management->fill($validated);
         $user_management->save();
         $request->session()->flash('success', 'User : '.$user_management['name'].' berhasil diubah!');
-        return redirect(route('super-admin.user-management.index'));
+        return redirect(route(Auth::user()->Role->code.'.user-management.index'));
     }
 
     /**
@@ -130,6 +130,6 @@ class UserManagementController extends Controller
     {
         $user_management->delete();
         $request->session()->flash('success', 'User : '.$user_management['name'].' berhasil diubah!');
-        return redirect(route('super-admin.user-management.index'));
+        return redirect(route(Auth::user()->Role->code.'.user-management.index'));
     }
 }

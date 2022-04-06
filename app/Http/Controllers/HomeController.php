@@ -24,7 +24,9 @@ class HomeController extends Controller
             return redirect(route('credit-manager.dashboard'));
         } else if(Auth::user()->can('isCreditCollection')) {
             return redirect(route('credit-collection.dashboard'));
-        }  else {
+        } else if(Auth::user()->can('isSuperRole')) {
+            return redirect(route('super-role.dashboard'));
+        } else {
             Auth::logout();
             return redirect(route('login'));
         }    
