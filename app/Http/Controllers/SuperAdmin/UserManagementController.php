@@ -56,7 +56,7 @@ class UserManagementController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:8',
         ]);
-        if($validated['role_id'] == 1 || $validated['role_id'] == 2 || $validated['role_id'] == 3) {
+        if($validated['role_id'] == 1 || $validated['role_id'] == 2 || $validated['role_id'] == 3 || $validated['role_id'] == 99) {
             unset($validated['branch_id']);
         }
         User::create($validated);
@@ -108,7 +108,7 @@ class UserManagementController extends Controller
             'email' => 'required|email|unique:users,email,'.$user_management->id,
             'password' => 'nullable|confirmed|min:8',
         ]);
-        if($validated['role_id'] == 1 || $validated['role_id'] == 2 || $validated['role_id'] == 3) {
+        if($validated['role_id'] == 1 || $validated['role_id'] == 2 || $validated['role_id'] == 3 || $validated['role_id'] == 99) {
             unset($validated['branch_id']);
         }
         if(!$validated['password']) {
